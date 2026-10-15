@@ -4,7 +4,7 @@ Little Claus. Big maze.
 
 A free, independent community adaptation of OpenSupaplex with Claus artwork and the original Supaplex puzzles. **Part I includes levels 1–37.**
 
-[Play on Claus Network](https://claus.si/c/clausplex) · [Play on GitHub Pages](https://0xlaplaced.github.io/clausplex/) · [Developer on X](https://x.com/0xlaplaced)
+[Play on Claus Network](https://claus.si/c/clausplex) · [Developer on X](https://x.com/0xlaplaced)
 
 ![Clausplex Part I](assets/screenshot.jpg)
 
@@ -34,7 +34,7 @@ Edit `index.html`, `app.js`, `rankings.js`, or `theme.css`, then run:
 python3 scripts/rebuild-site.py
 ```
 
-This reuses the committed JavaScript engine when a local C build is absent, runs `package.py`, and updates `docs/`. Keep generated `docs/` files committed. GitHub Pages serves **main /docs** automatically after a push.
+This reuses the committed JavaScript engine when a local C build is absent, runs `package.py`, and updates `docs/`. Keep generated `docs/` files committed as the reproducible static release bundle. The public game is published on Claus Network; this repository stores its source and build artifacts. GitHub Pages is disabled.
 
 For changes to C code or embedded resources, activate **Emscripten 6.0.12**, then run:
 
@@ -67,7 +67,7 @@ The Part I release passed 37/37 recorded solution simulations, 37/37 result and 
 
 ## Optional verified times
 
-On the canonical Claus page, enable **Ranked attempt** before playing. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, choose a public name, confirm publication, and submit. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. GitHub Pages supports anonymous play and reading the same leaderboard; submissions use the canonical Claus shell.
+On the canonical Claus page, enable **Ranked attempt** before playing. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, choose a public name, confirm publication, and submit. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. Local builds support anonymous play and reading the public leaderboard; submissions use the canonical Claus shell.
 
 The browser records the inputs actually consumed by the C simulation, seed, original map hash, build identity and simulation steps. A scheduled GitHub Action reconstructs the original map and replays those inputs in the same headless engine. Only a genuine winning replay produces a verified receipt. Times are server-calculated steps / 35; the displayed game clock is not trusted. Public reads pin the verifier's server-assigned author ID. Arbitrary records claiming to be verified are ignored.
 

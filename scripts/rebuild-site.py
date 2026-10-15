@@ -1,4 +1,4 @@
-"""Package the UI and update the committed GitHub Pages directory."""
+"""Package the UI and update the committed static release bundle."""
 from pathlib import Path
 import json
 import re
