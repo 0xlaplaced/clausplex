@@ -34,7 +34,7 @@ async function loadBoard(){
  const sequence=++readSequence,level=Number($('#board-level').value),assisted=$('#board-category').value==='assisted';$('#board-status').textContent='Loading verified times…';$('#board-rows').replaceChildren();$('#board-refresh').disabled=true;
  try{const boards=await records('boards');if(sequence!==readSequence)return;const board=boards.filter(x=>x.data?.gameVersion===cfg.gameVersion&&x.data.level===level).sort((a,b)=>b.updatedAt-a.updatedAt)[0];const entries=(board?.data.entries||[]).filter(e=>e.assisted===assisted&&Number.isInteger(e.steps)&&e.steps>0&&e.steps<=cfg.maxSteps&&typeof e.name==='string'&&e.name.length<=24&&typeof e.receiptId==='string').slice(0,10);
  for(const [i,e] of entries.entries()){const row=document.createElement('tr');for(const value of [String(i+1),e.name,time(e.steps)]){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}$('#board-rows').append(row);}
- $('#board-status').textContent=entries.length?'Top verified times for this level.':'No verified times here yet. Find a way through.';
+ $('#board-status').textContent=entries.length?'Top verified times for this level.':'No verified times for this level and category yet. Finish a named attempt and submit your replay to join.';
  }catch(e){if(sequence===readSequence)$('#board-status').textContent=window.__CL_BASE?'Leaderboards need an internet connection. Open the published game to view times.':'Times could not load. Check your connection and try Refresh.';}finally{if(sequence===readSequence)$('#board-refresh').disabled=false;}
 }
 async function check(){
@@ -63,11 +63,12 @@ function finish(Module,level,won,recorded){
  pending={capture:{format:'clausplex-rle-v1',gameVersion:cfg.gameVersion,level,levelHash:CLAUS_DATA.levels[level-1].hash,seed:Module._claus_capture_seed(),steps:Module._claus_capture_steps(),replay:btoa(String.fromCharCode(...bytes))}};
  $('#rank-summary').textContent='Recorded time · '+time(pending.capture.steps)+'. The server will replay your inputs before publishing a time.';
  $('#rank-name').value=playerName();
+ $('#result-submit').hidden=false;
  status('Your name is ready. Confirm publication and submit when you are ready. Leaving now discards this unsent replay.');
 }
 $('#player-setup').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
-if(embedded&&!window.__CL_BASE){app();}
 const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));const restoredName=route.has('ranked')?route.get('player')||'':'';$('#player-name').value=validName(restoredName)?restoredName:'';$('#ranked-mode').checked=active()&&validName(restoredName);
+$('#result-submit').onclick=()=>{$('#rank-result').scrollIntoView({behavior:'smooth',block:'center'});$('#rank-name').focus({preventScroll:true});};
 $('#player-name').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#start').click();}};
 $('#player-name').oninput=()=>{$('#ranked-mode').checked=Boolean($('#player-name').value.trim());$('#player-name').removeAttribute('aria-invalid');$('#player-error').hidden=true;};
 for(const level of CLAUS_DATA.levels){const o=document.createElement('option');o.value=level.number;o.textContent=String(level.number).padStart(3,'0')+' · '+level.name;$('#board-level').append(o);}

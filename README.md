@@ -54,6 +54,7 @@ python3 scripts/rebuild-site.py
 node validate_site.mjs
 node tests/test-loader.mjs
 node tests/test-progression.mjs
+node tests/test-browser-errors.mjs
 ```
 
 For a full simulation check of all 37 original solution recordings:
@@ -67,9 +68,11 @@ The Part I release passed 37/37 recorded solution simulations, 37/37 result and 
 
 The **Watch a solve** demonstration runs at the original 35 simulation steps per second (normal play speed). It stops on completion and does not submit a score.
 
-## Optional verified times
+## Leaderboard and optional verified times
 
-On the canonical Claus page, enter your **Player name** before playing to start a ranked attempt. Leave it blank for anonymous play. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, review the prefilled name, confirm publication, and submit. The nickname is carried in the level URL fragment between puzzles; it is not sent to a server until submission. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. Local builds support anonymous play and reading the public leaderboard; submissions use the canonical Claus shell.
+Open **Leaderboard** from the header or home screen to view public times without a wallet or sign-in. The table is filtered by level and category; an empty category means no verified submissions there yet.
+
+On the canonical Claus page, enter your **Player name** before playing to start a ranked attempt. Leave it blank for anonymous play. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, choose **Submit time to leaderboard** on the result screen, review the prefilled name, confirm publication, and submit. Anonymous games, unsent wins and watched solves are never automatically added. The nickname is carried in the level URL fragment between puzzles; it is not sent to a server until submission. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. Local builds support anonymous play and reading the public leaderboard; submissions use the canonical Claus shell.
 
 The browser records the inputs actually consumed by the C simulation, seed, original map hash, build identity and simulation steps. A scheduled GitHub Action reconstructs the original map and replays those inputs in the same headless engine. Only a genuine winning replay produces a verified receipt. Times are server-calculated steps / 35; the displayed game clock is not trusted. Public reads pin the verifier's server-assigned author ID. Arbitrary records claiming to be verified are ignored.
 
