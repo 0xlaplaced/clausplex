@@ -65,6 +65,8 @@ python3 test-portable.py
 
 The Part I release passed 37/37 recorded solution simulations, 37/37 result and navigation unit checks, and 7/7 loader unit checks. Browser smoke checks covered loading, level selection, levels 1 and 37, and returning home. These are not a complete manual playthrough of every puzzle.
 
+The **Watch a solve** demonstration runs at the original 35 simulation steps per second (normal play speed). It stops on completion and does not submit a score.
+
 ## Optional verified times
 
 On the canonical Claus page, enter your **Player name** before playing to start a ranked attempt. Leave it blank for anonymous play. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, review the prefilled name, confirm publication, and submit. The nickname is carried in the level URL fragment between puzzles; it is not sent to a server until submission. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. Local builds support anonymous play and reading the public leaderboard; submissions use the canonical Claus shell.

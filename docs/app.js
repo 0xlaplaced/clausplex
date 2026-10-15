@@ -27,7 +27,7 @@ function pause(to=!paused){if(!ready||finished||replay||to===paused)return;clear
 function showResult(won,recorded=false){
  if(finished)return;
  if(typeof window!=='undefined')window.ClausRankings?.finish(Module,selected,won,recorded);
- finished=true;clearKeys();if(!recorded)Module._claus_pause?.(1);
+ finished=true;clearKeys();if(!recorded||replay)Module._claus_pause?.(1);
  $('#loading').hidden=true;$('#pause-overlay').hidden=true;$('#actor').hidden=true;$('#result').hidden=false;$('#pause').disabled=true;
  $('#result-kicker').textContent=recorded?'ORIGINAL SOLUTION':won?'LEVEL '+String(selected).padStart(3,'0')+' COMPLETE':'TRY A DIFFERENT PATH';
  $('#result-title').textContent=recorded?(won?'A way through.':'The solve stopped.'):won?(selected===37?'Part I. Made it.':'Made it, little Claus.'):'One more try?';
@@ -37,7 +37,8 @@ function showResult(won,recorded=false){
  $('#result-action').focus({preventScroll:true});announce($('#result-title').textContent);report(won?'success':'ended',{level:selected,recorded,remaining:diagnostics.remaining});
 }
 function navigate(level,auto=false,watch=false){const u=new URL(location.href);u.search='';const route=new URLSearchParams();route.set('level',clampLevel(level));if(auto)route.set('play','1');if(watch)route.set('replay','1');if(!watch&&typeof window!=='undefined'&&window.ClausRankings?.enabled()){route.set('ranked','1');const name=window.ClausRankings?.playerName?.();if(name)route.set('player',name);}if(test)route.set('test','1');u.hash=route.toString();const queryChanged=location.search!==u.search;location.href=u.href;if(!queryChanged)location.reload();}
-var Module={arguments:replay?['-q','REPLAY'+String(selected).padStart(3,'0')+'.SP']:['-p','CURRENT.SP','-g','5'],canvas:$('#canvas'),
+function gameArguments(level,watching){return ['-p',watching?'REPLAY'+String(level).padStart(3,'0')+'.SP':'CURRENT.SP','-g','5'];}
+var Module={arguments:gameArguments(selected,replay),canvas:$('#canvas'),
  onRuntimeInitialized:()=>{if(!replay){Module._claus_set_ranked_seed(window.ClausRankings?.enabled()?CLAUS_DATA.levels[selected-1].rankedSeed:-1);const all=Module.FS.readFile('/LEVELS.DAT');Module.FS.writeFile('/CURRENT.SP',all.slice((selected-1)*1536,selected*1536));}diagnostics.runtimeReady=true;report('ready','runtime initialized');renderDiagnostics();},
  print:t=>report('stdout',String(t)),
  printErr:t=>{const s=String(t);if(s.includes('Demo successful:')){diagnostics.replayResult='success';showResult(true,true);renderDiagnostics();}else if(s.includes('Demo failed:')){diagnostics.replayResult='failed';error(s);showResult(false,true);}else if(!s.startsWith('INFO:'))error(s);},
@@ -60,17 +61,17 @@ async function start(){
  if(!replay&&window.ClausRankings?.prepare(selected)===false)return;
  started=true;diagnostics.level=selected;$('#home').hidden=true;$('#play').hidden=false;document.body.classList.add('is-playing');$('#loading').hidden=false;$('#retry-load').hidden=true;$('#load-status').textContent='Downloading the game…';$('#start').disabled=true;
  if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Ranked attempt · fixed seed. Finish the level to submit your replay for verification.';$('#live-label').textContent='RANKED ATTEMPT';}
- if(replay){$('#mode-label').textContent='WATCH / ORIGINAL SOLUTION';$('#live-label').textContent='ORIGINAL SOLUTION PLAYING';$('#pause').disabled=true;}
+ if(replay){$('#mode-label').textContent='WATCH / ORIGINAL SOLUTION';$('#live-label').textContent='ORIGINAL SOLUTION · NORMAL SPEED';$('#pause').disabled=true;}
  try{
   await loadEngineParts();
-  Module.arguments=replay?['-q','REPLAY'+String(selected).padStart(3,'0')+'.SP']:['-p','CURRENT.SP','-g','5'];
+  Module.arguments=gameArguments(selected,replay);
   $('#load-status').textContent='Opening the maze…';const script=document.createElement('script');script.textContent=window.__ospSourceParts.join('');window.__ospSourceParts.length=0;document.body.appendChild(script);Module.canvas.focus({preventScroll:true});
  }catch(e){started=false;$('#start').disabled=false;$('#load-status').textContent='The game could not download. Check your connection and try again.';$('#retry-load').hidden=false;$('#retry-load').focus();report('load-error',String(e.message));}
 }
 $('#start').onclick=start;$('#retry-load').onclick=start;$('#watch').onclick=()=>navigate(1,true,true);
 $('#pause').onclick=()=>pause();$('#resume').onclick=()=>pause(false);
 $('#restart').onclick=()=>navigate(selected,true);$('#leave').onclick=()=>navigate(selected);$('#result-home').onclick=()=>navigate(selected);
-setInterval(()=>{if(!Module._claus_running||finished)return;try{const running=Module._claus_running(),frame=Module._claus_frame(),remaining=Module._claus_remaining(),red=Module._claus_red(),seconds=Module._claus_seconds();Object.assign(diagnostics,{running,frame,x:Module._claus_x(),y:Module._claus_y(),remaining,red,seconds,demo:Module._claus_demo(),outcome:Module._claus_outcome(),won:Module._claus_won(),dead:Module._claus_dead(),cspViolations:violations});$('#remaining').textContent=remaining;$('#red').textContent=red;$('#time').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');if(!ready&&running&&frame>startFrame){ready=true;document.title='Clausplex — '+CLAUS_DATA.levels[selected-1].name;$('#loading').hidden=true;announce('Level '+selected+' started. '+remaining+(remaining===1?' spark left.':' sparks left.'));}if(ready&&lastRemaining!==remaining){lastRemaining=remaining;if(!replay)announce(remaining===0?'Sparks collected. Find the exit.':remaining+(remaining===1?' spark left.':' sparks left.'));}if(ready&&!replay){if(Module._claus_won())showResult(true);else if(Module._claus_dead())showResult(false);}renderDiagnostics();report('state',diagnostics);}catch(e){error(e.message);}},150);
+setInterval(()=>{if(!Module._claus_running||finished)return;try{const running=Module._claus_running(),frame=Module._claus_frame(),remaining=Module._claus_remaining(),red=Module._claus_red(),seconds=Module._claus_seconds();Object.assign(diagnostics,{running,frame,x:Module._claus_x(),y:Module._claus_y(),remaining,red,seconds,demo:Module._claus_demo(),outcome:Module._claus_outcome(),won:Module._claus_won(),dead:Module._claus_dead(),cspViolations:violations});$('#remaining').textContent=remaining;$('#red').textContent=red;$('#time').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0');if(!ready&&running&&frame>startFrame){ready=true;document.title='Clausplex — '+CLAUS_DATA.levels[selected-1].name;$('#loading').hidden=true;announce('Level '+selected+' started. '+remaining+(remaining===1?' spark left.':' sparks left.'));}if(ready&&lastRemaining!==remaining){lastRemaining=remaining;if(!replay)announce(remaining===0?'Sparks collected. Find the exit.':remaining+(remaining===1?' spark left.':' sparks left.'));}if(ready){if(Module._claus_won())showResult(true,replay);else if(Module._claus_dead())showResult(false,replay);}renderDiagnostics();report('state',diagnostics);}catch(e){error(e.message);}},150);
 function openDialog(id){if(started&&ready&&!finished&&!paused&&!replay){pause(true);wasPausedForDialog=true;}else wasPausedForDialog=false;$(id).showModal();}
 function closeDialog(d){d.close();if(wasPausedForDialog){wasPausedForDialog=false;pause(false);}}
 $('#board-open').onclick=()=>{$('#board-level').value=String(selected);openDialog('#board-dialog');window.ClausRankings.loadBoard();};

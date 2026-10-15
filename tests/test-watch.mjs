@@ -1,0 +1,10 @@
+import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';
+const source=fs.readFileSync(new URL('../docs/app.js',import.meta.url),'utf8'),gameArgs=source.slice(source.indexOf('function gameArguments('),source.indexOf('\nvar Module='));
+const context={};vm.createContext(context);vm.runInContext(gameArgs,context);
+for(const level of [1,2,3,5,10,20])assert.deepEqual(Array.from(context.gameArguments(level,true)),['-p','REPLAY'+String(level).padStart(3,'0')+'.SP','-g','5']);
+assert.deepEqual(Array.from(context.gameArguments(37,false)),['-p','CURRENT.SP','-g','5']);
+const elements=new Map();let paused=false,submitted=false,target;
+const scope={replay:true,selected:1,finished:false,diagnostics:{remaining:0},Module:{_claus_pause(n){paused=n===1;}},window:{ClausRankings:{finish(m,l,won,recorded){submitted=!recorded;}}},$:s=>{if(!elements.has(s))elements.set(s,{textContent:'',focus(){}});return elements.get(s);},clearKeys(){},announce(){},report(){},navigate(...x){target=x;}};
+vm.runInNewContext(source.slice(source.indexOf('function showResult('),source.indexOf('\nfunction navigate('))+'\nshowResult(true,true);',scope);
+assert.equal(paused,true);assert.equal(submitted,false);elements.get('#result-action').onclick();assert.equal(target[0],1);assert.equal(target[1],true);
+console.log(JSON.stringify({normalSpeedLaunchCases:7,recordedWinStopsPlayback:true,recordedWinCannotSubmit:true,recordedWinOffersManualPlay:true}));

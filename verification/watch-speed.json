@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-15",
+  "change": "Watch a solve now uses -p with speed 5 (original 35 steps/s target) instead of the unpaced -q verifier mode. The UI observes the latched completion flag and freezes the original solution on completion.",
+  "normalSpeedLaunchCases": 7,
+  "resultChecks": [
+    "Recorded win pauses engine",
+    "Original solution cannot submit a ranked score",
+    "Original solution offers manual play"
+  ],
+  "browserOriginalLevel1": {
+    "won": true,
+    "valid": true,
+    "steps": 1125,
+    "wallSecondsAfterResume": 33.104,
+    "initialCapturedSteps": 2,
+    "scope": "Measured browser run with live promotional canvas capture active; capture/render overhead can lower the observed step rate."
+  },
+  "engineAndRankedSimulationUnchanged": true
+}
