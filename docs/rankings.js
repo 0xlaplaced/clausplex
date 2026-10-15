@@ -67,6 +67,9 @@ function finish(Module,level,won,recorded){
  status('Your name is ready. Confirm publication and submit when you are ready. Leaving now discards this unsent replay.');
 }
 $('#player-setup').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
+// The Claus shell uses this connection handshake to reveal the game iframe.
+// It does not request a session or a wallet; authentication happens only on submit.
+if(embedded&&!window.__CL_BASE){app();}
 const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));const restoredName=route.has('ranked')?route.get('player')||'':'';$('#player-name').value=validName(restoredName)?restoredName:'';$('#ranked-mode').checked=active()&&validName(restoredName);
 $('#result-submit').onclick=()=>{$('#rank-result').scrollIntoView({behavior:'smooth',block:'center'});$('#rank-name').focus({preventScroll:true});};
 $('#player-name').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#start').click();}};
