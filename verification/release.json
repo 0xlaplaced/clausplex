@@ -46,5 +46,31 @@
     "https://github.com/0xlaplaced/clausplex/actions/runs/38744070441",
     "https://github.com/0xlaplaced/clausplex/actions/runs/38744226937"
   ],
-  "scope": "All 37 original solutions captured and revalidated in two headless cycles. Two actual queue-to-GitHub-worker-to-public-board integrations used clearly named assisted QA solution records at levels 1 and 37. UI submission consent, sign-in errors and retry tests use stubs; public board rendering is checked in actual browsers. This is not a full manual human playthrough of all 37 levels."
+  "scope": "All 37 original solutions captured and revalidated in two headless cycles. Two actual queue-to-GitHub-worker-to-public-board integrations used clearly named assisted QA solution records at levels 1 and 37. UI submission consent, sign-in errors and retry tests use stubs; public board rendering is checked in actual browsers. This is not a full manual human playthrough of all 37 levels.",
+  "browserChecks": {
+    "canonicalClaus": {
+      "rankedOptInVisible": true,
+      "officialSignInAvailable": true,
+      "anonymousPlay": true,
+      "pause": true,
+      "homeNavigation": true,
+      "consoleErrors": 0,
+      "publicTimesAtLevels": [
+        1,
+        37
+      ]
+    },
+    "githubPages": {
+      "rankedModeLinksToClaus": true,
+      "publicTimesAtLevels": [
+        1,
+        37
+      ]
+    },
+    "mobileViewport": {
+      "width": 375,
+      "height": 812,
+      "leaderboardVisible": true
+    }
+  }
 }
