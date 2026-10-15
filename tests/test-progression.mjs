@@ -17,10 +17,10 @@ for(const ranked of [false,true])for(let level=1;level<=37;level++){
  const action=element('#result-action');action.onclick();
  const expected=level===37?1:level+1;
  const routeLocation={href:'https://claus-network-sites.vercel.app/r/fixture/index.html',search:'',reloads:0,reload(){this.reloads++;}};
- const navigationScope={URL,URLSearchParams,location:routeLocation,clampLevel:n=>Math.max(1,Math.min(37,Number(n)||1)),test:false,window:{ClausRankings:{enabled:()=>ranked}}};
+ const navigationScope={URL,URLSearchParams,location:routeLocation,clampLevel:n=>Math.max(1,Math.min(37,Number(n)||1)),test:false,window:{ClausRankings:{enabled:()=>ranked,playerName:()=>'Test Player'}}};
  vm.runInNewContext(navigation+'\nnavigate('+JSON.stringify(target[0])+',true);',navigationScope);
  const route=new URL(routeLocation.href),fragment=new URLSearchParams(route.hash.slice(1));
- const passed=route.search===''&&fragment.get('level')===String(expected)&&fragment.get('play')==='1'&&fragment.has('ranked')===ranked&&routeLocation.reloads===1&&target?.[0]===expected&&target?.[1]===true&&paused&&element('#result').hidden===false&&(level===37?action.textContent.includes('Replay Part I'):action.textContent.includes(String(expected).padStart(3,'0')));
+ const passed=route.search===''&&fragment.get('level')===String(expected)&&fragment.get('play')==='1'&&fragment.has('ranked')===ranked&&(ranked?fragment.get('player')==='Test Player':!fragment.has('player'))&&routeLocation.reloads===1&&target?.[0]===expected&&target?.[1]===true&&paused&&element('#result').hidden===false&&(level===37?action.textContent.includes('Replay Part I'):action.textContent.includes(String(expected).padStart(3,'0')));
  results.push({level,ranked,expectedNext:expected,actualNext:target?.[0],queryFree:route.search==='',route:route.hash,passed});
 }
 const report={testedAtUTC:new Date().toISOString(),scope:'Unit check of the delivered result-screen action and real fragment navigation for all 37 levels; DOM and browser Location are stubs, not a rendered browser run.',passed:results.filter(x=>x.passed).length,total:results.length,results};

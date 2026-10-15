@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-15",
+  "change": "Player name before Play, optional anonymous mode, automatic ranked attempt for a valid name, prefilled submission name and nickname retained across level navigation.",
+  "checks": {
+    "rankingsUnitChecks": 32,
+    "rankingsUnitCycles": 2,
+    "levelNavigationChecks": 74,
+    "loaderChecks": 7,
+    "parsedPackagedScripts": 15
+  },
+  "browserPreview": {
+    "shortNameBlocksStart": true,
+    "namedStartUsesRankedMode": true,
+    "homeNavigationRetainsName": true,
+    "mobileWidth": 375,
+    "mobileHeight": 812,
+    "nameFieldAbovePlay": true
+  },
+  "scope": "UI preview used the actual packaged game with a local-only hosting-origin adapter. The engine and backend are unchanged. Publication and live browser verification follow owner sign-in."
+}

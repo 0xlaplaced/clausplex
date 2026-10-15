@@ -2,7 +2,14 @@
 'use strict';
 const $=s=>document.querySelector(s),cfg=CLAUS_DATA.ranking,canonical='https://claus.si/c/clausplex';
 const embedded=window.parent!==window&&location.hostname==='claus-network-sites.vercel.app'&&!window.__CL_BASE,active=()=>embedded&&Date.now()<cfg.verifierExpiresAt;
-let client,pending,readSequence=0;
+let client,pending,readSequence=0,attemptName=null;
+const validName=name=>/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(name);
+function playerName(){return attemptName??$('#player-name').value.trim();}
+function prepare(){
+ const field=$('#player-name'),name=field.value.trim();
+ if(active()&&name&&!validName(name)){field.setAttribute('aria-invalid','true');$('#player-error').hidden=false;$('#player-error').textContent='Use 3–24 English letters, numbers, spaces, dots, underscores or hyphens.';field.focus();return false;}
+ attemptName=active()?name:'';field.value=attemptName;$('#ranked-mode').checked=Boolean(attemptName);field.removeAttribute('aria-invalid');$('#player-error').hidden=true;return true;
+}
 function app(){
  if(client)return client;
  const channel=new MessageChannel(),requests=new Map();
@@ -43,7 +50,7 @@ async function submit(event){
  const name=$('#rank-name').value.trim();if(!/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(name)){status('Use 3–24 English letters, numbers, spaces, dots, underscores or hyphens.');return;}
  // Freeze the payload and key before the first write; uncertain replies never create a second run.
  $('#rank-save').disabled=true;status('Submitting replay…');
- try{const session=await app().call('session');if(!session.connected)throw Error('sign_in_required');pending.data??={...pending.capture,name,assisted:$('#rank-assisted').checked,runId:crypto.randomUUID()};$('#rank-name').disabled=true;$('#rank-assisted').disabled=true;pending.record=await app().call('app_record_create',{collection:'runs',data:pending.data,idempotencyKey:'run:'+pending.data.runId});$('#rank-save').hidden=true;$('#rank-check').hidden=false;status('Queued for server replay. Check verification in a few minutes. No transaction was sent.');}
+ try{const session=await app().call('session');if(!session.connected)throw Error('sign_in_required');pending.data??={...pending.capture,name,assisted:$('#rank-assisted').checked,runId:crypto.randomUUID()};attemptName=name;$('#rank-name').disabled=true;$('#rank-assisted').disabled=true;pending.record=await app().call('app_record_create',{collection:'runs',data:pending.data,idempotencyKey:'run:'+pending.data.runId});$('#rank-save').hidden=true;$('#rank-check').hidden=false;status('Queued for server replay. Check verification in a few minutes. No transaction was sent.');}
  catch(e){status(friendly(e));}finally{$('#rank-save').disabled=false;}
 }
 function finish(Module,level,won,recorded){
@@ -53,12 +60,15 @@ function finish(Module,level,won,recorded){
  const bytes=Array.from({length:Module._claus_capture_length()},(_,i)=>Module._claus_capture_byte(i));
  pending={capture:{format:'clausplex-rle-v1',gameVersion:cfg.gameVersion,level,levelHash:CLAUS_DATA.levels[level-1].hash,seed:Module._claus_capture_seed(),steps:Module._claus_capture_steps(),replay:btoa(String.fromCharCode(...bytes))}};
  $('#rank-summary').textContent='Recorded time · '+time(pending.capture.steps)+'. The server will replay your inputs before publishing a time.';
- status('Choose a public name and submit when you are ready. Leaving now discards this unsent replay.');
+ $('#rank-name').value=playerName();
+ status('Your name is ready. Confirm publication and submit when you are ready. Leaving now discards this unsent replay.');
 }
-$('#ranked-option').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
+$('#player-setup').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
 if(embedded&&!window.__CL_BASE){app();}
-const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));$('#ranked-mode').checked=active()&&route.has('ranked');
+const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));const restoredName=route.has('ranked')?route.get('player')||'':'';$('#player-name').value=validName(restoredName)?restoredName:'';$('#ranked-mode').checked=active()&&validName(restoredName);
+$('#player-name').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#start').click();}};
+$('#player-name').oninput=()=>{$('#ranked-mode').checked=Boolean($('#player-name').value.trim());$('#player-name').removeAttribute('aria-invalid');$('#player-error').hidden=true;};
 for(const level of CLAUS_DATA.levels){const o=document.createElement('option');o.value=level.number;o.textContent=String(level.number).padStart(3,'0')+' · '+level.name;$('#board-level').append(o);}
 $('#board-level').value=route.get('level')||1;$('#board-level').onchange=loadBoard;$('#board-category').onchange=loadBoard;$('#board-refresh').onclick=loadBoard;$('#rank-form').onsubmit=submit;$('#rank-check').onclick=check;
-window.ClausRankings={enabled,finish,loadBoard,time};
+window.ClausRankings={enabled,prepare,playerName,finish,loadBoard,time};
 })();

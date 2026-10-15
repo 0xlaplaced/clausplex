@@ -36,7 +36,7 @@ function showResult(won,recorded=false){
  $('#result-action').onclick=()=>navigate(recorded||!won?selected:selected===37?1:selected+1,true);
  $('#result-action').focus({preventScroll:true});announce($('#result-title').textContent);report(won?'success':'ended',{level:selected,recorded,remaining:diagnostics.remaining});
 }
-function navigate(level,auto=false,watch=false){const u=new URL(location.href);u.search='';const route=new URLSearchParams();route.set('level',clampLevel(level));if(auto)route.set('play','1');if(watch)route.set('replay','1');if(!watch&&typeof window!=='undefined'&&window.ClausRankings?.enabled())route.set('ranked','1');if(test)route.set('test','1');u.hash=route.toString();const queryChanged=location.search!==u.search;location.href=u.href;if(!queryChanged)location.reload();}
+function navigate(level,auto=false,watch=false){const u=new URL(location.href);u.search='';const route=new URLSearchParams();route.set('level',clampLevel(level));if(auto)route.set('play','1');if(watch)route.set('replay','1');if(!watch&&typeof window!=='undefined'&&window.ClausRankings?.enabled()){route.set('ranked','1');const name=window.ClausRankings?.playerName?.();if(name)route.set('player',name);}if(test)route.set('test','1');u.hash=route.toString();const queryChanged=location.search!==u.search;location.href=u.href;if(!queryChanged)location.reload();}
 var Module={arguments:replay?['-q','REPLAY'+String(selected).padStart(3,'0')+'.SP']:['-p','CURRENT.SP','-g','5'],canvas:$('#canvas'),
  onRuntimeInitialized:()=>{if(!replay){Module._claus_set_ranked_seed(window.ClausRankings?.enabled()?CLAUS_DATA.levels[selected-1].rankedSeed:-1);const all=Module.FS.readFile('/LEVELS.DAT');Module.FS.writeFile('/CURRENT.SP',all.slice((selected-1)*1536,selected*1536));}diagnostics.runtimeReady=true;report('ready','runtime initialized');renderDiagnostics();},
  print:t=>report('stdout',String(t)),
@@ -57,6 +57,7 @@ function loadEngineParts(){
 }
 async function start(){
  if(started)return;
+ if(!replay&&window.ClausRankings?.prepare()===false)return;
  started=true;diagnostics.level=selected;$('#home').hidden=true;$('#play').hidden=false;document.body.classList.add('is-playing');$('#loading').hidden=false;$('#retry-load').hidden=true;$('#load-status').textContent='Downloading the game…';$('#start').disabled=true;
  if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Ranked attempt · fixed seed. Finish the level to submit your replay for verification.';$('#live-label').textContent='RANKED ATTEMPT';}
  if(replay){$('#mode-label').textContent='WATCH / ORIGINAL SOLUTION';$('#live-label').textContent='ORIGINAL SOLUTION PLAYING';$('#pause').disabled=true;}

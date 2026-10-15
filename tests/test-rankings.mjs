@@ -7,15 +7,18 @@ import {deployment} from '../backend/verify-queue.mjs';
 const source=await fs.readFile(new URL('../rankings.js',import.meta.url),'utf8'),fixtures=JSON.parse(await fs.readFile(new URL('reference-runs.json',import.meta.url),'utf8'));
 let checks=0;
 async function cycle(n){
- const elements=new Map();function el(id){if(!elements.has(id))elements.set(id,{hidden:false,disabled:false,checked:false,value:'',textContent:'',children:[],append(...x){this.children.push(...x);},replaceChildren(...x){this.children=x;}});return elements.get(id);}
+ const elements=new Map();function el(id){if(!elements.has(id))elements.set(id,{hidden:false,disabled:false,checked:false,value:'',textContent:'',children:[],attributes:{},setAttribute(k,v){this.attributes[k]=v;},removeAttribute(k){delete this.attributes[k];},focus(){this.focused=true;},append(...x){this.children.push(...x);},replaceChildren(...x){this.children=x;}});return elements.get(id);}
  const rows={boards:[],receipts:[]},writes=[];let connected=false,loseReply=true;
  class Channel{constructor(){this.port1={postMessage:m=>{queueMicrotask(()=>{let data,error;if(m.operation==='session')data={connected};else{writes.push(m.input);if(loseReply){loseReply=false;error='outcome_unknown_read_before_retry';}else data={id:'saved-run',authorId:'tester'};}this.port1.onmessage({data:{type:'claus:app-result',id:m.id,data,error}});});}};this.port2={};}}
- const context={CLAUS_DATA:{ranking:{...deployment,gameVersion:catalog.gameVersion},levels:catalog.levels.map(x=>({number:x.number,name:'Puzzle',hash:x.hash,rankedSeed:x.seed}))},document:{querySelector:el,createElement:()=>el('node-'+Math.random())},window:{parent:{},__CL_BASE:null},parent:{postMessage(){}},location:{hostname:'claus-network-sites.vercel.app',hash:'#level=1&ranked=1',search:''},MessageChannel:Channel,crypto:webcrypto,URLSearchParams,Date,Error,Promise,setTimeout,clearTimeout,AbortSignal,btoa:s=>Buffer.from(s,'binary').toString('base64'),fetch:async url=>({ok:true,json:async()=>({items:rows[new URL(url).searchParams.get('collection')],nextCursor:null})})};
+ const context={CLAUS_DATA:{ranking:{...deployment,gameVersion:catalog.gameVersion},levels:catalog.levels.map(x=>({number:x.number,name:'Puzzle',hash:x.hash,rankedSeed:x.seed}))},document:{querySelector:el,createElement:()=>el('node-'+Math.random())},window:{parent:{},__CL_BASE:null},parent:{postMessage(){}},location:{hostname:'claus-network-sites.vercel.app',hash:'#level=1&ranked=1&player='+encodeURIComponent('QA test '+n),search:''},MessageChannel:Channel,crypto:webcrypto,URLSearchParams,Date,Error,Promise,setTimeout,clearTimeout,AbortSignal,btoa:s=>Buffer.from(s,'binary').toString('base64'),fetch:async url=>({ok:true,json:async()=>({items:rows[new URL(url).searchParams.get('collection')],nextCursor:null})})};
  context.window.parent=context.parent;el('#board-level').value='1';el('#board-category').value='standard';
  vm.runInNewContext(source,context);const ui=context.window.ClausRankings;
- assert.equal(ui.enabled(),true);checks++;
+ assert.equal(ui.enabled(),true);assert.equal(el('#player-name').value,'QA test '+n);checks++;
+ el('#player-name').value='<bad>';assert.equal(ui.prepare(),false);assert.equal(el('#player-name').attributes['aria-invalid'],'true');assert.equal(el('#player-name').focused,true);checks++;
+ el('#player-name').value='';assert.equal(ui.prepare(),true);assert.equal(ui.enabled(),false);checks++;
+ el('#player-name').value='QA test '+n;el('#player-name').oninput();assert.equal(ui.prepare(),true);assert.equal(ui.enabled(),true);checks++;
  const f=fixtures[n===1?0:36],bytes=Buffer.from(f.replay,'base64'),engine={_claus_capture_valid:()=>1,_claus_capture_length:()=>bytes.length,_claus_capture_byte:i=>bytes[i],_claus_capture_steps:()=>f.steps,_claus_capture_seed:()=>f.seed};
- ui.finish(engine,f.level,true,false);assert.equal(el('#rank-result').hidden,false);checks++;
+ ui.finish(engine,f.level,true,false);assert.equal(el('#rank-result').hidden,false);assert.equal(el('#rank-name').value,'QA test '+n);checks++;
  el('#rank-name').value='QA test '+n;el('#rank-consent').checked=false;await el('#rank-form').onsubmit({preventDefault(){}});assert.equal(writes.length,0);checks++;
  el('#rank-consent').checked=true;await el('#rank-form').onsubmit({preventDefault(){}});assert.match(el('#rank-status').textContent,/Sign in/);assert.equal(writes.length,0);checks++;
  connected=true;await el('#rank-form').onsubmit({preventDefault(){}});assert.match(el('#rank-status').textContent,/timed out/);checks++;
