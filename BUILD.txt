@@ -1,0 +1,87 @@
+CLAUSPLEX PART I / 1.0 — corresponding source and artwork
+
+Based on OpenSupaplex 7.2.2, commit
+bad56a4e174e628643995284ea55d4c49af3137c.
+
+The full modified src tree is included under source/src. The gameplay file
+supaplex.c, animation descriptors, conditionals, level data and collision rules
+are unchanged. Four upstream C files are adapted:
+  graphics.c: Claus color palette.
+  sdl2/video.c: display the original 320x176 playfield above the HTML HUD.
+  sdl2/keyboard.c: merge a touch-control bitmask with ordinary keyboard input.
+  sdl_common/system.c: wait while the web UI is paused; exclude paused time; observe and latch the real completion flag.
+bridge.c contains the small web adapter and read-only state accessors.
+A win is latched from byte_5A19B. A quit countdown alone does not mean death.
+The UI pauses on completion and navigates explicitly to the next level.
+
+BUILD
+Activate Emscripten 6.0.12 using emsdk_env.sh, with Python 3.10+ and Node.js.
+No proprietary services or API keys are required. From this directory:
+
+  python3 build-portable.py
+  python3 package.py
+  python3 serve.py
+
+serve.py prints the local HTTP address. Its root page embeds /strict/index.html
+under a CSP sandbox matching the observed Claus restrictions, substituting only
+the local script and parent origins. Never use a browser security bypass.
+
+The web engine is built with WASM=0 (pure JavaScript), ASYNCIFY=1, SDL2, 32 MiB
+linear memory and the original null audio driver. WASM=0 is deprecated by this
+Emscripten version; pin 6.0.12 for this build. A newer compiler is not verified.
+Emscripten downloads its standard SDL2 dependency when first building it.
+
+EDIT
+index.html, app.js and theme.css are the authored HTML UI. Change them and run
+package.py; recompiling C is only needed after C or embedded DAT changes.
+art.py authors all new sprite/background pixels procedurally using the original
+renderer atlas addresses in animation-meta.json. It samples no original sprite
+artwork. Regenerate artwork with:
+
+  python3 art.py resources
+
+Then rebuild the C engine. If changing palette.json/art.py color values, update
+the clausPalette table in source/src/graphics.c to match the shared CSS palette.
+The Bricolage font and its OFL license are under assets/. The official Claus
+logo is assets/claus-logo.png, from https://claus.si/assets/claus-logo.png.
+package.py embeds this brand asset once in data.js. The same character is used
+for the interface, level previews and game actor. The actor presentation layer
+reads the engine position and scroll offsets each animation frame. Original
+collision rules, positions and timing are unchanged. The engine actor sprite
+areas are empty; composites still draw their original adjacent object areas.
+The Claus asset retains its owner's rights; GPL does not relicense the brand.
+
+CHECKS
+  python3 build-portable.py --headless
+  python3 test-portable.py
+
+The 37 included recordings are original solutions, one matching each original
+level map. Their provenance and original filenames are in tests/manifest.json.
+They retain their respective authors' rights. The headless build uses the same
+simulation with the null video driver; this verifies gameplay, not image quality.
+
+  node validate_site.mjs
+
+This parses the packaged scripts and unit-checks the single-file srcdoc wrapper,
+including level/restart navigation forwarding. It does not render an offline browser.
+Browser QA evidence supplied separately uses the rendered strict release.
+prepare_browser_qa.py creates local-only adjacent-exit and original recording
+fixtures outside the shipped release. The adjacent-exit case runs manual input
+with gIsPlayingDemo=0; it checks completion, locked exits and next-level loading.
+The srcdoc fixture exercises the same standalone navigation bridge.
+
+LICENSES AND CREDITS
+The OpenSupaplex C source is GPL version 3; see assets/GPL-3.0.txt. Preserve
+upstream copyright notices. SDL2 and Emscripten runtime notices are also included.
+The original Supaplex level data and legacy fallback bitmap fonts retain their
+original authors' rights; the engine's GPL does not relicense those materials.
+Supaplex: Philip Jespersen and Michael Stopp. OpenSupaplex: Sergio Padrino and
+contributors. New sprite/background artwork and the HTML interface were authored
+for this adaptation. This is an independent fan prototype, not an official Claus
+game. Source and test material are provided for further local development.
+
+PART I RESOURCE SELECTION
+LEVELS.DAT contains exactly the first 37 original 1536-byte records.
+The unchanged engine retains its 111-entry menu catalog structure; entries
+38–111 are labeled unavailable and have no level maps in this distribution.
+Do not regenerate the resources from the full upstream set.

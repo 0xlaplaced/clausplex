@@ -1,0 +1,261 @@
+[
+  {
+    "level": 1,
+    "passed": true,
+    "source": "tests/solves/demos/001 ------- WARM UP -------.sp",
+    "sha256": "f2c86e8cd722a321f1f19623e09d180935221be89108e7537b76c381b17dcad1",
+    "log": "Demo successful: tests/solves/demos/001 ------- WARM UP -------.sp\n"
+  },
+  {
+    "level": 2,
+    "passed": true,
+    "source": "tests/solves/demos/002 -------- EXIT! --------.sp",
+    "sha256": "31d9a1ed84e44368d45787a1b3376623767cc236a1e1062f6d9422fa404dedcc",
+    "log": "Demo successful: tests/solves/demos/002 -------- EXIT! --------.sp\n"
+  },
+  {
+    "level": 3,
+    "passed": true,
+    "source": "tests/solves/demos/003 ------ STONE-AGE ------.sp",
+    "sha256": "ddeb2cd5ab55749b9ba121049ce632c56d7c389fb14fc08b990a0c77477b6283",
+    "log": "Demo successful: tests/solves/demos/003 ------ STONE-AGE ------.sp\n"
+  },
+  {
+    "level": 4,
+    "passed": true,
+    "source": "tests/solves/demos/004 ------ COLLECTOR ------ Ate every eatable thing.sp",
+    "sha256": "debaf67707765fa25afc6bb1c5fd4b263b8541a707f3655d0508c1853b3ca40e",
+    "log": "Demo successful: tests/solves/demos/004 ------ COLLECTOR ------ Ate every eatable thing.sp\n"
+  },
+  {
+    "level": 5,
+    "passed": true,
+    "source": "tests/solves/demos/005 ------ EASY DEAL ------.sp",
+    "sha256": "a3697563524cad438918532d713eb1cc6e23620a46257e35d8d71225b100c3ea",
+    "log": "Demo successful: tests/solves/demos/005 ------ EASY DEAL ------.sp\n"
+  },
+  {
+    "level": 6,
+    "passed": true,
+    "source": "tests/solves/demos/006 --- DOWN THEY FALL! --- Only one base not eaten!.sp",
+    "sha256": "8571fdbfbc52ff13b6e6e2ee9f7534fac48479435637a7639f4145f62173e987",
+    "log": "Demo successful: tests/solves/demos/006 --- DOWN THEY FALL! --- Only one base not eaten!.sp\n"
+  },
+  {
+    "level": 7,
+    "passed": true,
+    "source": "tests/solves/demos/007 ----- GO THROUGH!! ----- Ate every possible base.sp",
+    "sha256": "9e4d131945e80a85c2d6217a774c61bcf015482ab26bfe2609c229eaec9a1fb7",
+    "log": "Demo successful: tests/solves/demos/007 ----- GO THROUGH!! ----- Ate every possible base.sp\n"
+  },
+  {
+    "level": 8,
+    "passed": true,
+    "source": "tests/solves/demos/008 --- GET THOSE TOO! --- Ate everything.sp",
+    "sha256": "400f5fe9434d32f65f50e54eb7d5cdee29e3f9b98d3580b69a154b280f8852ca",
+    "log": "Demo successful: tests/solves/demos/008 --- GET THOSE TOO! --- Ate everything.sp\n"
+  },
+  {
+    "level": 9,
+    "passed": true,
+    "source": "tests/solves/demos/009 ------ BUG FUNNY ------ How sick is it to eat every crappy base!.sp",
+    "sha256": "85bcc5a4c7e754cc5eb7d339ff78bb1f65827c8924bbbf6664d1b4ff421c7994",
+    "log": "Demo successful: tests/solves/demos/009 ------ BUG FUNNY ------ How sick is it to eat every crappy base!.sp\n"
+  },
+  {
+    "level": 10,
+    "passed": true,
+    "source": "tests/solves/demos/010 - EASY COME, EASY GO! -.sp",
+    "sha256": "2794e31191eb12560d0a79edc5a259dded756f9029a754dbdf7b2fb64095f0eb",
+    "log": "Demo successful: tests/solves/demos/010 - EASY COME, EASY GO! -.sp\n"
+  },
+  {
+    "level": 11,
+    "passed": true,
+    "source": "tests/solves/demos/011 ---- RUN FOR LIFE! ---- my favourite level.sp",
+    "sha256": "1d1446a32347647941733174a12690e47702c4ef4afb66ae311555b9139c8f10",
+    "log": "Demo successful: tests/solves/demos/011 ---- RUN FOR LIFE! ---- my favourite level.sp\n"
+  },
+  {
+    "level": 12,
+    "passed": true,
+    "source": "tests/solves/demos/012 ----- IGNORE THEM -----.sp",
+    "sha256": "accc57ecdc28e796e7366d26917aae5454357fe0e916202c326b9c1c7f57d324",
+    "log": "Demo successful: tests/solves/demos/012 ----- IGNORE THEM -----.sp\n"
+  },
+  {
+    "level": 13,
+    "passed": true,
+    "source": "tests/solves/demos/013 ------ ANONYMOUS ------.sp",
+    "sha256": "cf4578c8090a5344672cbbc0d104b095574f8ed8d0324481d17459740cff2d38",
+    "log": "Demo successful: tests/solves/demos/013 ------ ANONYMOUS ------.sp\n"
+  },
+  {
+    "level": 14,
+    "passed": true,
+    "source": "tests/solves/demos/014 ------ FALL OUT! ------ What a VMWare-cheeah.sp",
+    "sha256": "e0b5f8e8c5d53a4a02c64a3f5d4baede1c7429046be7166fa8b110a6e58498ed",
+    "log": "Demo successful: tests/solves/demos/014 ------ FALL OUT! ------ What a VMWare-cheeah.sp\n"
+  },
+  {
+    "level": 15,
+    "passed": true,
+    "source": "tests/solves/demos/015 ---- ONE THING ... ----.sp",
+    "sha256": "9618aa9ab318bea29eaf2a9c84988e008707f6fa2f15dd3148bb8aa5f2a6378e",
+    "log": "Demo successful: tests/solves/demos/015 ---- ONE THING ... ----.sp\n"
+  },
+  {
+    "level": 16,
+    "passed": true,
+    "source": "tests/solves/demos/016 ----- JUST DO IT! -----.sp",
+    "sha256": "038ee8e0e102d5d0c1c198e8f9cbbfb6efadfdd26ae32dc1481723e89fa68f83",
+    "log": "Demo successful: tests/solves/demos/016 ----- JUST DO IT! -----.sp\n"
+  },
+  {
+    "level": 17,
+    "passed": true,
+    "source": "tests/solves/demos/017 -------- BANG! --------.sp",
+    "sha256": "9c49460941ab676a30984782c0665539188789ae26e966ace8c7679bfdd2e3f8",
+    "log": "Demo successful: tests/solves/demos/017 -------- BANG! --------.sp\n"
+  },
+  {
+    "level": 18,
+    "passed": true,
+    "source": "tests/solves/demos/018 ------- QUICKY! -------.sp",
+    "sha256": "006fb6194f6b152f7b41da02ff9e937c418a2df007f67bfb71a6c45e9f50a218",
+    "log": "Demo successful: tests/solves/demos/018 ------- QUICKY! -------.sp\n"
+  },
+  {
+    "level": 19,
+    "passed": true,
+    "source": "tests/solves/demos/019 ----- CRAZY HARRY -----.sp",
+    "sha256": "7501986c36bf33d667b2a32037e3bc15eaeb84157a6935035338761a0d1f7040",
+    "log": "Demo successful: tests/solves/demos/019 ----- CRAZY HARRY -----.sp\n"
+  },
+  {
+    "level": 20,
+    "passed": true,
+    "source": "tests/solves/demos/020 ----- MINOTAURUS! ----- hard for the first times.sp",
+    "sha256": "2afc00cbe8bc54f617481e772ee149df8d7f839f00a6d36d93e614e6f6320768",
+    "log": "Demo successful: tests/solves/demos/020 ----- MINOTAURUS! ----- hard for the first times.sp\n"
+  },
+  {
+    "level": 21,
+    "passed": true,
+    "source": "tests/solves/demos/021 ------- GRAVITY ------- Couldn't feel the gravity.sp",
+    "sha256": "82f2406466c812fb1bf2c07777c90c20c7b046629a255dc19fbe6f0d0675c406",
+    "log": "Demo successful: tests/solves/demos/021 ------- GRAVITY ------- Couldn't feel the gravity.sp\n"
+  },
+  {
+    "level": 22,
+    "passed": true,
+    "source": "tests/solves/demos/022 ----- UP AND DOWN -----.sp",
+    "sha256": "6b7ca895bb3c300f4bc11f89896fdc454c16ca74ec947688a3262190699c9e59",
+    "log": "Demo successful: tests/solves/demos/022 ----- UP AND DOWN -----.sp\n"
+  },
+  {
+    "level": 23,
+    "passed": true,
+    "source": "tests/solves/demos/023 ------ BOMB TIME ------ Two bomb sleft.sp",
+    "sha256": "dc05a5a045a5a990f9fb165fbda23a298b2f2bd45eceacc146454c353da22ea0",
+    "log": "Demo successful: tests/solves/demos/023 ------ BOMB TIME ------ Two bomb sleft.sp\n"
+  },
+  {
+    "level": 24,
+    "passed": true,
+    "source": "tests/solves/demos/024 - 200 MOVING OBJECTS! -.sp",
+    "sha256": "87c439364578cf513d1a1689c683f43725d5a48922d81db9571e92d2dc821c7c",
+    "log": "Demo successful: tests/solves/demos/024 - 200 MOVING OBJECTS! -.sp\n"
+  },
+  {
+    "level": 25,
+    "passed": true,
+    "source": "tests/solves/demos/025 -------- YAWN! --------.sp",
+    "sha256": "cc66d807d0fb1bedeaeb6636f032634e21ba070562588738c5562afe2c06d7c2",
+    "log": "Demo successful: tests/solves/demos/025 -------- YAWN! --------.sp\n"
+  },
+  {
+    "level": 26,
+    "passed": true,
+    "source": "tests/solves/00/00s026-g.sp",
+    "sha256": "92c846bfb762f1225f0a4d7baa965a72e31ea7ff7d1cd701227a5aa3541d98e6",
+    "log": "Demo successful: tests/solves/00/00s026-g.sp\n"
+  },
+  {
+    "level": 27,
+    "passed": true,
+    "source": "tests/solves/demos/027 ----- ONCE AROUND -----.sp",
+    "sha256": "16f6048f577700767f960a220398008d95ba493a211331be7bd45d55efe9ded7",
+    "log": "Demo successful: tests/solves/demos/027 ----- ONCE AROUND -----.sp\n"
+  },
+  {
+    "level": 28,
+    "passed": true,
+    "source": "tests/solves/demos/028 ------ BABA'S WORK ------.sp",
+    "sha256": "f40615681e06a95924c150f07a585586845c49da3a0cefc8b61f68cffb565910",
+    "log": "Demo successful: tests/solves/demos/028 ------ BABA'S WORK ------.sp\n"
+  },
+  {
+    "level": 29,
+    "passed": true,
+    "source": "tests/solves/demos/029 --------- TNT --------- my second favourite level.sp",
+    "sha256": "446c759e21f4d5fda6c2445a37bafbe1c24490d60476768b2e10ad067f78530e",
+    "log": "Demo successful: tests/solves/demos/029 --------- TNT --------- my second favourite level.sp\n"
+  },
+  {
+    "level": 30,
+    "passed": true,
+    "source": "tests/solves/demos/030 ----- NO PROBLEM -----.sp",
+    "sha256": "bae0f32d51a342ea211e89501ac70143765124ebb30ace16a85d0acd149807e7",
+    "log": "Demo successful: tests/solves/demos/030 ----- NO PROBLEM -----.sp\n"
+  },
+  {
+    "level": 31,
+    "passed": true,
+    "source": "tests/solves/demos/031 ---- TIME TO OPEN! ----.sp",
+    "sha256": "a29fd6c6cf28e84ca1bcc79fdab4648d7d5e800bcce14bc06aeba571093e524f",
+    "log": "Demo successful: tests/solves/demos/031 ---- TIME TO OPEN! ----.sp\n"
+  },
+  {
+    "level": 32,
+    "passed": true,
+    "source": "tests/solves/demos/032 ---- EASY BUSINESS ----.sp",
+    "sha256": "075aaf3929553f72cddfaf34f26b73b0eb6b0ddf5baa4d8d7c1e560e5c4e4451",
+    "log": "Demo successful: tests/solves/demos/032 ---- EASY BUSINESS ----.sp\n"
+  },
+  {
+    "level": 33,
+    "passed": true,
+    "source": "tests/solves/demos/033 -INSIDE-OUTSIDE-INSIDE.sp",
+    "sha256": "1b20a6ee2218155ef684b8871931b7fa9d8efa26d1b3a4f0825f8bca3ddee3a2",
+    "log": "Demo successful: tests/solves/demos/033 -INSIDE-OUTSIDE-INSIDE.sp\n"
+  },
+  {
+    "level": 34,
+    "passed": true,
+    "source": "tests/solves/demos/034 ----- EASY RIDER! ----- cleared gravity part.sp",
+    "sha256": "2bd5854911aabd75b049eb183745bc2c0883b89e808cc492e5781641b10459c5",
+    "log": "Demo successful: tests/solves/demos/034 ----- EASY RIDER! ----- cleared gravity part.sp\n"
+  },
+  {
+    "level": 35,
+    "passed": true,
+    "source": "tests/solves/demos/035 ----- NO MIRACLE! ----- but I tried the miracle.sp",
+    "sha256": "f26998117c1180650dbad4dc99664c7d07759ca865d7af2a28c94b18b66c2770",
+    "log": "Demo successful: tests/solves/demos/035 ----- NO MIRACLE! ----- but I tried the miracle.sp\n"
+  },
+  {
+    "level": 36,
+    "passed": true,
+    "source": "tests/solves/demos/036 -------- PUSH! --------.sp",
+    "sha256": "c6ebf24492b1bc79150b67ec1a4ca068365baee47184633b2ad63c6213702920",
+    "log": "Demo successful: tests/solves/demos/036 -------- PUSH! --------.sp\n"
+  },
+  {
+    "level": 37,
+    "passed": true,
+    "source": "tests/solves/demos/037 ---- REALLY BORING ----.sp",
+    "sha256": "7693c15882c34fdcde5c73aab93f5b5ae6d2e362d6e6f63f8e5b9cb0e4faa9d7",
+    "log": "Demo successful: tests/solves/demos/037 ---- REALLY BORING ----.sp\n"
+  }
+]

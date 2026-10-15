@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.pyc
+/build/
+/site/
+/qa/
+/package-check.json
+/syntax-results.json
+/test-results.json
+/tests/*-results.json
+*.log
+.env
+.env.*
+*.token
