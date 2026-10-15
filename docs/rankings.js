@@ -67,7 +67,7 @@ function finish(Module,level,won,recorded){
  status('Your name is ready. Confirm publication and submit when you are ready. Leaving now discards this unsent replay.');
 }
 $('#player-setup').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
-// The Claus shell uses this connection handshake to reveal the game iframe.
+// This handshake enables the Claus shell's optional sign-in controls.
 // It does not request a session or a wallet; authentication happens only on submit.
 if(embedded&&!window.__CL_BASE){app();}
 const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));const restoredName=route.has('ranked')?route.get('player')||'':'';$('#player-name').value=validName(restoredName)?restoredName:'';$('#ranked-mode').checked=active()&&validName(restoredName);
