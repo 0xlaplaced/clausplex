@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-15",
+  "gameVersion": "sha256:b6653cb86dae4d1298e3d92d8affcfc2c374c4e0e185b8c9f273a430d6bf9d74",
+  "simulationCycles": [
+    {
+      "cycle": 1,
+      "verifiedLevels": 37,
+      "validationAndRecoveryChecks": 29
+    },
+    {
+      "cycle": 2,
+      "verifiedLevels": 37,
+      "validationAndRecoveryChecks": 29
+    }
+  ],
+  "frontendUnitChecks": 26,
+  "frontendUnitCycles": 2,
+  "navigationChecks": 74,
+  "loaderChecks": 7,
+  "syntaxAndOfflineWrapperChecks": 15,
+  "liveCycles": [
+    {
+      "cycle": 1,
+      "level": 1,
+      "submissionId": "61f906a1-1398-479e-af6d-902f2b4af51e",
+      "receiptId": "79c90cd9-4b31-4e3b-a0f8-6658ca53c293",
+      "boardId": "a419b8f2-0f86-4f41-8fc4-76eff71b168c",
+      "steps": 1125,
+      "assisted": true,
+      "publicRead": true,
+      "serverVerified": true
+    },
+    {
+      "cycle": 2,
+      "level": 37,
+      "submissionId": "5fbc31e3-e494-4e72-9f34-7c08563d73da",
+      "receiptId": "ebd0f0cf-a483-4768-85d4-1d632a2d8e2c",
+      "boardId": "4d4c5ff2-b9ac-432b-81e1-8525cf35ff3b",
+      "steps": 13815,
+      "assisted": true,
+      "publicRead": true,
+      "serverVerified": true
+    }
+  ],
+  "githubWorkflowRuns": [
+    "https://github.com/0xlaplaced/clausplex/actions/runs/38744070441",
+    "https://github.com/0xlaplaced/clausplex/actions/runs/38744226937"
+  ],
+  "scope": "All 37 original solutions captured and revalidated in two headless cycles. Two actual queue-to-GitHub-worker-to-public-board integrations used clearly named assisted QA solution records at levels 1 and 37. UI submission consent, sign-in errors and retry tests use stubs; public board rendering is checked in actual browsers. This is not a full manual human playthrough of all 37 levels."
+}

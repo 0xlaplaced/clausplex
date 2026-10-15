@@ -12,6 +12,7 @@ function app(){
  return client;
 }
 async function records(collection){
+ if(window.__CL_BASE)throw Error('offline_copy');
  const rows=[],seen=new Set();let after;
  do{const q=new URLSearchParams({collection,authorId:cfg.verifierId,limit:'100',...(after?{after}:{})});const r=await fetch(cfg.origin+'/v1/public/apps/'+cfg.projectId+'/records?'+q,{credentials:'omit',redirect:'error',signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error('read_failed');const page=await r.json();if(!Array.isArray(page.items))throw Error('read_failed');rows.push(...page.items.filter(x=>x.authorId===cfg.verifierId));after=page.nextCursor;if(after&&seen.has(after)||seen.size>60)throw Error('read_failed');seen.add(after);}while(after);
  return rows;
