@@ -68,37 +68,43 @@ The Part I release passed 37/37 recorded solution simulations, 37/37 result and 
 
 The **Watch a solve** demonstration runs at the original 35 simulation steps per second (normal play speed). It stops on completion and does not submit a score.
 
-## Leaderboard and optional verified times
+## Automatic nickname leaderboard
 
-Open **Leaderboard** from the header or home screen to view public times without a wallet or sign-in. The table is filtered by level and category; an empty category means no verified submissions there yet.
+Enter **Player name**, choose **Play level**, and finish a puzzle. The nickname is
+registered on start and completed times save automatically. No wallet, sign-in,
+publication checkbox or Submit step. Leave the name blank for anonymous play;
+watched solves never save scores. Names carry between levels in the URL fragment.
+Names and best times are public. Nicknames are display labels, not reserved or
+verified accounts: matching names share one best entry per level and category.
 
-On the canonical Claus page, enter your **Player name** before playing to start a ranked attempt. Leave it blank for anonymous play. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, choose **Submit time to leaderboard** on the result screen, review the prefilled name, confirm publication, and submit. Anonymous games, unsent wins and watched solves are never automatically added. The nickname is carried in the level URL fragment between puzzles; it is not sent to a server until submission. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. Local builds support anonymous play and reading the public leaderboard; submissions use the canonical Claus shell.
+The result screen shows Saving, Saved or a retry action on connection failure.
+A saved replay persists on the service even if the player leaves. The scheduled
+GitHub verifier replays inputs in our pinned original engine before adding a time
+to the table. It runs every five minutes when GitHub schedules permit; delays are
+possible. This proves a valid solution, not human play. Original recordings are
+recognized automatically and listed in Assisted. The top ten best nickname times
+are displayed for each level/category. Time is simulation steps / 35, excluding
+pauses. No prizes, token, payment or NFT integration.
 
-The browser records the inputs actually consumed by the C simulation, seed, original map hash, build identity and simulation steps. A scheduled GitHub Action reconstructs the original map and replays those inputs in the same headless engine. Only a genuine winning replay produces a verified receipt. Times are server-calculated steps / 35; the displayed game clock is not trusted. Public reads pin the verifier's server-assigned author ID. Arbitrary records claiming to be verified are ignored.
+The public API origin is `scoresOrigin` in `backend/deployment.json`:
+`POST /players`, `POST /runs`, `GET /runs/{runId}`, and
+`GET /boards?level=1&assisted=false`. Only the server-side `VERIFIER_KEY` can read
+the private replay queue or post verdicts; its identical Actions secret is
+`CLAUS_SCORES_KEY`. The browser has no credential. Service source, schema and
+regression tests are archived in `backend/public-scores/`; its canonical deployment
+source uses Sites, while the game remains published on Claus. Database migrations
+are deployment-only. The former Claus record queue stays supported for already
+submitted runs; no new player needs that sign-in flow or its expiring credential.
 
-There are Standard and Assisted categories, with each player's best time in each category and the top ten displayed. Known original solve recordings are automatically assisted. Replay verification proves a valid solution, **not human play**; scripts, shared solutions and multiple accounts cannot be reliably excluded. Names are public, unverified aliases; player IDs and submitted inputs are public too. Play anonymously if you do not want a persistent public submission.
-
-Verification is queued, normally checked every five minutes. GitHub can delay or disable schedules; use **Check verification** later or the public leaderboard. The action can also be dispatched manually. Your Mac does not need to stay on. Pending unsent input recordings live only in the current page; leaving discards them. After submission the public queue persists independently of the browser.
-
-Run the two-cycle regression suite:
-
-```sh
-node tests/test-verifier.mjs 1
-node tests/test-verifier.mjs 2
-node tests/test-rankings.mjs
-```
-
-This validates all 37 captured solutions twice, rejects malformed or incomplete inputs, checks process deadlines, forged records, duplicate submissions, cooldowns, daily limits, category isolation, best times, and recovery after lost replies or a crash between receipt and leaderboard writes. UI unit tests use stubs; live integration and browser checks are documented separately.
-
-### Operations and limits
-
-The worker's `CLAUS_VERIFIER_TOKEN` exists only in GitHub encrypted Actions secrets. It is an app.use-only delegated credential, not an owner credential or wallet key. Its public principal/expiry are in `backend/deployment.json`. Claus limits mandates to 30 days; renew the credential and encrypted secret before expiry, update the public expiry, rebuild and publish. If it expires, ranked submission is disabled and the worker reports paused; anonymous play and existing times remain available. Do not commit a credential to this repository.
-
-Each player gets at most six submissions per UTC day, at least 60 seconds apart. The worker handles at most ten per batch, at most two per player. Replays are limited to 4096 encoded input bytes and 126000 steps; actual encoding may hit the byte limit earlier. Each replay runs in a credential-free child process with a 12-second deadline, output cap and 256 MiB JavaScript heap cap, using only repository-controlled maps and code. This bounds work; it does not stop a Sybil attack or prevent an attacker exhausting the platform's shared quotas.
-
-Claus managed apps currently have 5000 records, 1000 mutations/day/app, 200/day/actor and 1000 memberships. A verified submission generally uses a run, receipt and board mutation. Monitor Actions errors and collection usage; additional capacity or an archival design is needed before these limits. Do not delete the receipt ledger without rebuilding the materialized boards. Keep the verifier ID pinned when rotating a credential for the same principal; migrating principals requires an explicit data migration.
-
-The public API is the Claus managed records endpoint: `/v1/public/apps/{projectId}/records?collection=boards&authorId={verifierId}&limit=100`, using the origin, project and verifier IDs from `backend/deployment.json`. Follow `nextCursor` using `after`. Receipts and runs use the same endpoint with their collection names. Consumers must check `authorId`, gameVersion and schema, and must not trust a client-set flag. Ordinary anonymous plays are not counted or tracked.
+Run `node tests/test-rankings.mjs` and `node tests/test-guest-verifier.mjs` for the
+new UI/queue regressions. The score service tests run in its own checkout with
+`node tests.mjs`. Existing `tests/test-verifier.mjs` still checks the original C
+replay validation and legacy queue. Replays are capped at 4096 input bytes,
+126000 steps and a 12-second verification deadline in a credential-free child
+process. Score writes have daily network/name bounds, 500 queued attempts and
+50,000 total attempts; raw IP addresses are not stored. Monitor these limits
+before increasing them. Scores remain pending if verification is unavailable;
+unverified client times never reach the leaderboard.
 
 ## Source and credits
 

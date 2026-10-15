@@ -63,7 +63,7 @@ async function start(){
  if(started)return;
  if(!replay&&window.ClausRankings?.prepare(selected)===false)return;
  started=true;diagnostics.level=selected;$('#home').hidden=true;$('#play').hidden=false;document.body.classList.add('is-playing');$('#loading').hidden=false;$('#retry-load').hidden=true;$('#load-status').textContent='Downloading the game…';$('#start').disabled=true;
- if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Ranked attempt · fixed seed. Finish the level to submit your replay for verification.';$('#live-label').textContent='RANKED ATTEMPT';}
+ if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Named attempt · fixed seed. Completed times save automatically.';$('#live-label').textContent='AUTO-SAVE ON';}
  if(replay){$('#mode-label').textContent='WATCH / ORIGINAL SOLUTION';$('#live-label').textContent='ORIGINAL SOLUTION · NORMAL SPEED';$('#pause').disabled=true;}
  try{
   await loadEngineParts();

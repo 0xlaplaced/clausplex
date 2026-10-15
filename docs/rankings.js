@@ -1,80 +1,67 @@
 (()=>{
 'use strict';
 const $=s=>document.querySelector(s),cfg=CLAUS_DATA.ranking,canonical='https://claus.si/c/clausplex';
-const embedded=window.parent!==window&&location.hostname==='claus-network-sites.vercel.app'&&!window.__CL_BASE,active=()=>embedded&&Date.now()<cfg.verifierExpiresAt;
-let client,pending,readSequence=0,attemptName=null;
+const embedded=window.parent!==window&&location.hostname==='claus-network-sites.vercel.app'&&!window.__CL_BASE,active=()=>!window.__CL_BASE&&Boolean(cfg.scoresOrigin);
+let pending,readSequence=0,attemptName=null,registeredName='',pollTimer;
 const validName=name=>/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(name);
 function playerName(){return attemptName??$('#player-name').value.trim();}
+async function api(path,data){
+ const response=await fetch(cfg.scoresOrigin+path,{credentials:'omit',redirect:'error',signal:AbortSignal.timeout(15000),...(data?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),keepalive:true}:{})});
+ if(!response.ok){let code='connection_failed';try{code=(await response.json()).error||code;}catch{}throw Error(code);}
+ return response.json();
+}
+function register(name){if(!name||registeredName===name)return;registeredName=name;api('/players',{name}).catch(()=>{registeredName='';});}
 function prepare(level=1){
  const field=$('#player-name'),name=field.value.trim();
  if(active()&&name&&!validName(name)){field.setAttribute('aria-invalid','true');$('#player-error').hidden=false;$('#player-error').textContent='Use 3–24 English letters, numbers, spaces, dots, underscores or hyphens.';field.focus();return false;}
  attemptName=active()?name:'';field.value=attemptName;$('#ranked-mode').checked=Boolean(attemptName);field.removeAttribute('aria-invalid');$('#player-error').hidden=true;
+ if(attemptName)register(attemptName);
  if(embedded){const url=new URL(location.href),next=new URLSearchParams(url.hash.slice(1));next.set('level',String(level));if(attemptName){next.set('ranked','1');next.set('player',attemptName);}else{next.delete('ranked');next.delete('player');}url.hash=next.toString();if(url.href!==location.href)location.replace(url.href);}
  return true;
 }
-function app(){
- if(client)return client;
- const channel=new MessageChannel(),requests=new Map();
- channel.port1.onmessage=({data:m})=>{if(m?.type!=='claus:app-result')return;const r=requests.get(m.id);if(!r)return;requests.delete(m.id);clearTimeout(r.timer);m.error?r.reject(Error(m.error)):r.resolve(m.data);};
- parent.postMessage({type:'claus:app-connect'},'https://claus.si',[channel.port2]);
- client={call(operation,input={}){return new Promise((resolve,reject)=>{if(requests.size>=4)return reject(Error('too_many_requests'));const id=crypto.randomUUID(),timer=setTimeout(()=>{requests.delete(id);reject(Error('outcome_unknown_read_before_retry'));},22000);requests.set(id,{resolve,reject,timer});channel.port1.postMessage({type:'claus:app-call',id,operation,input});});}};
- return client;
-}
-async function records(collection){
- if(window.__CL_BASE)throw Error('offline_copy');
- const rows=[],seen=new Set();let after;
- do{const q=new URLSearchParams({collection,authorId:cfg.verifierId,limit:'100',...(after?{after}:{})});const r=await fetch(cfg.origin+'/v1/public/apps/'+cfg.projectId+'/records?'+q,{credentials:'omit',redirect:'error',signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error('read_failed');const page=await r.json();if(!Array.isArray(page.items))throw Error('read_failed');rows.push(...page.items.filter(x=>x.authorId===cfg.verifierId));after=page.nextCursor;if(after&&seen.has(after)||seen.size>60)throw Error('read_failed');seen.add(after);}while(after);
- return rows;
-}
 function time(steps){const total=Math.round(steps*1000/35);return Math.floor(total/60000)+':'+String(Math.floor(total/1000)%60).padStart(2,'0')+'.'+String(total%1000).padStart(3,'0');}
 function enabled(){return active()&&$('#ranked-mode').checked;}
-function status(text){$('#rank-status').textContent=text;}
-function friendly(e){return ({sign_in_required:'Use Sign in on the Claus page, then try again. No transaction is needed.',app_session_expired:'Your session expired. Sign in on Claus again, then retry.',session_expired:'Your session expired. Sign in on Claus again, then retry.',outcome_unknown_read_before_retry:'The reply timed out. Check verification first, or retry this same submission; its request key is preserved.',quota_exceeded:'The app quota is full. Try again later.',rate_limited:'Too many requests. Wait a minute, then retry.'})[e.message]||'Could not reach Claus. Check your connection and sign-in, then retry the same submission.';}
+function status(text){$('#result-score').textContent=text;}
+function friendly(e){return ['rate_limited','daily_limit','queue_full'].includes(e.message)?'The score service is busy. Your replay is still here; try Save again shortly.':'Your time has not saved yet. Check your connection, then choose Save again before leaving.';}
 async function loadBoard(){
- const sequence=++readSequence,level=Number($('#board-level').value),assisted=$('#board-category').value==='assisted';$('#board-status').textContent='Loading verified times…';$('#board-rows').replaceChildren();$('#board-refresh').disabled=true;
- try{const boards=await records('boards');if(sequence!==readSequence)return;const board=boards.filter(x=>x.data?.gameVersion===cfg.gameVersion&&x.data.level===level).sort((a,b)=>b.updatedAt-a.updatedAt)[0];const entries=(board?.data.entries||[]).filter(e=>e.assisted===assisted&&Number.isInteger(e.steps)&&e.steps>0&&e.steps<=cfg.maxSteps&&typeof e.name==='string'&&e.name.length<=24&&typeof e.receiptId==='string').slice(0,10);
+ const sequence=++readSequence,level=Number($('#board-level').value),assisted=$('#board-category').value==='assisted';$('#board-status').textContent='Loading times…';$('#board-rows').replaceChildren();$('#board-refresh').disabled=true;
+ try{if(!active())throw Error('offline_copy');const board=await api('/boards?level='+level+'&assisted='+assisted);if(sequence!==readSequence)return;const entries=(board.entries||[]).filter(e=>Number.isInteger(e.steps)&&e.steps>0&&e.steps<=cfg.maxSteps&&typeof e.name==='string'&&validName(e.name)&&typeof e.receiptId==='string').slice(0,10);
  for(const [i,e] of entries.entries()){const row=document.createElement('tr');for(const value of [String(i+1),e.name,time(e.steps)]){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}$('#board-rows').append(row);}
- $('#board-status').textContent=entries.length?'Top verified times for this level.':'No verified times for this level and category yet. Finish a named attempt and submit your replay to join.';
+ $('#board-status').textContent=entries.length?'Best times for this level.':'No times here yet. Enter a name and finish this level to join automatically.';
  }catch(e){if(sequence===readSequence)$('#board-status').textContent=window.__CL_BASE?'Leaderboards need an internet connection. Open the published game to view times.':'Times could not load. Check your connection and try Refresh.';}finally{if(sequence===readSequence)$('#board-refresh').disabled=false;}
 }
-async function check(){
- if(!pending?.record)return;$('#rank-check').disabled=true;status('Checking verification…');
- try{const result=(await records('receipts')).find(r=>r.data?.submissionId===pending.record.id&&r.data.gameVersion===cfg.gameVersion);
- if(!result){status('Queued. Verification usually takes a few minutes; GitHub may delay scheduled runs. You can leave this page.');return;}
- if(result.data.outcome==='verified'){status('Verified · '+time(result.data.steps)+(result.data.assisted?' · Assisted / original solve':' · Standard')+'. Your best time is on the leaderboard.');$('#rank-check').hidden=true;}
- else status(result.data.outcome==='duplicate'?'This replay is already verified. Your existing best time is kept.':'Verification rejected: '+String(result.data.reason).replaceAll('_',' ')+'.');
- }catch(e){status('Could not check verification. Your submitted replay remains queued. Try again later.');}finally{$('#rank-check').disabled=false;}
+async function check(run=pending){
+ if(!run?.saved)return;
+ try{const result=await api('/runs/'+run.data.runId);if(run!==pending)return;
+ if(result.status==='verified'){status('Saved · '+time(result.steps)+(result.assisted?' · Assisted':'')+'. Your best time is on the leaderboard.');return;}
+ if(result.status==='rejected'){status('This replay could not be verified. You can keep playing.');return;}
+ status('Saved · '+time(run.data.steps)+'. Your time will appear after the automatic replay check.');
+ }catch{if(run===pending)status('Your time is saved. The leaderboard will update after the replay check.');}
+ if(run===pending&&run.polls++<18)pollTimer=setTimeout(()=>check(run),10000);
 }
-async function submit(event){
- event.preventDefault();if(!pending)return;
- if(!active()){status('Ranked submission is unavailable here. Open Claus, or wait for verifier renewal.');return;}
- if(!$('#rank-consent').checked){status('Confirm that your name and replay will be public.');return;}
- const name=$('#rank-name').value.trim();if(!/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(name)){status('Use 3–24 English letters, numbers, spaces, dots, underscores or hyphens.');return;}
- // Freeze the payload and key before the first write; uncertain replies never create a second run.
- $('#rank-save').disabled=true;status('Submitting replay…');
- try{const session=await app().call('session');if(!session.connected)throw Error('sign_in_required');pending.data??={...pending.capture,name,assisted:$('#rank-assisted').checked,runId:crypto.randomUUID()};attemptName=name;$('#rank-name').disabled=true;$('#rank-assisted').disabled=true;pending.record=await app().call('app_record_create',{collection:'runs',data:pending.data,idempotencyKey:'run:'+pending.data.runId});$('#rank-save').hidden=true;$('#rank-check').hidden=false;status('Queued for server replay. Check verification in a few minutes. No transaction was sent.');}
- catch(e){status(friendly(e));}finally{$('#rank-save').disabled=false;}
+async function save(run=pending){
+ if(!run||run.busy||run.saved)return;
+ run.busy=true;$('#score-retry').hidden=true;status('Saving your time…');
+ try{await api('/runs',run.data);run.saved=true;register(run.data.name);if(run!==pending)return;status('Saved · '+time(run.data.steps)+'. Your time will appear after the automatic replay check.');pollTimer=setTimeout(()=>check(run),10000);}
+ catch(e){if(run!==pending)return;status(friendly(e));$('#score-retry').hidden=false;}
+ finally{run.busy=false;}
 }
 function finish(Module,level,won,recorded){
  if(!won||recorded||!enabled())return;
- const section=$('#rank-result');section.hidden=false;
- if(!Module._claus_capture_valid?.()||Module._claus_capture_length()<1){status('This replay exceeded the recording limit and cannot be submitted. You can still keep playing.');$('#rank-form').hidden=true;return;}
+ clearTimeout(pollTimer);$('#result-submit').hidden=false;$('#result-score').hidden=false;
+ if(!Module._claus_capture_valid?.()||Module._claus_capture_length()<1){status('This attempt exceeded the replay limit. Your next attempt can still save a time.');return;}
  const bytes=Array.from({length:Module._claus_capture_length()},(_,i)=>Module._claus_capture_byte(i));
- pending={capture:{format:'clausplex-rle-v1',gameVersion:cfg.gameVersion,level,levelHash:CLAUS_DATA.levels[level-1].hash,seed:Module._claus_capture_seed(),steps:Module._claus_capture_steps(),replay:btoa(String.fromCharCode(...bytes))}};
- $('#rank-summary').textContent='Recorded time · '+time(pending.capture.steps)+'. The server will replay your inputs before publishing a time.';
- $('#rank-name').value=playerName();
- $('#result-submit').hidden=false;
- status('Your name is ready. Confirm publication and submit when you are ready. Leaving now discards this unsent replay.');
+ pending={data:{format:'clausplex-rle-v1',gameVersion:cfg.gameVersion,level,levelHash:CLAUS_DATA.levels[level-1].hash,seed:Module._claus_capture_seed(),steps:Module._claus_capture_steps(),replay:btoa(String.fromCharCode(...bytes)),name:playerName(),assisted:false,runId:crypto.randomUUID()},saved:false,busy:false,polls:0};
+ save(pending);
 }
 $('#player-setup').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
-// This handshake enables the Claus shell's optional sign-in controls.
-// It does not request a session or a wallet; authentication happens only on submit.
-if(embedded&&!window.__CL_BASE){app();}
+// Nickname-only public API: no Claus session, wallet request or host auth handshake.
 const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));const restoredName=route.has('ranked')?route.get('player')||'':'';$('#player-name').value=validName(restoredName)?restoredName:'';$('#ranked-mode').checked=active()&&validName(restoredName);
-$('#result-submit').onclick=()=>{$('#rank-result').scrollIntoView({behavior:'smooth',block:'center'});$('#rank-name').focus({preventScroll:true});};
+$('#result-submit').onclick=()=>{$('#board-level').value=String(pending?.data.level||1);$('#board-nav').click();};
+$('#score-retry').onclick=()=>save();
 $('#player-name').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#start').click();}};
 $('#player-name').oninput=()=>{$('#ranked-mode').checked=Boolean($('#player-name').value.trim());$('#player-name').removeAttribute('aria-invalid');$('#player-error').hidden=true;};
 for(const level of CLAUS_DATA.levels){const o=document.createElement('option');o.value=level.number;o.textContent=String(level.number).padStart(3,'0')+' · '+level.name;$('#board-level').append(o);}
-$('#board-level').value=route.get('level')||1;$('#board-level').onchange=loadBoard;$('#board-category').onchange=loadBoard;$('#board-refresh').onclick=loadBoard;$('#rank-form').onsubmit=submit;$('#rank-check').onclick=check;
+$('#board-level').value=route.get('level')||1;$('#board-level').onchange=loadBoard;$('#board-category').onchange=loadBoard;$('#board-refresh').onclick=loadBoard;
 window.ClausRankings={enabled,prepare,playerName,finish,loadBoard,time};
 })();
