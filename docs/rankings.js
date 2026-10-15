@@ -5,10 +5,12 @@ const embedded=window.parent!==window&&location.hostname==='claus-network-sites.
 let client,pending,readSequence=0,attemptName=null;
 const validName=name=>/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(name);
 function playerName(){return attemptName??$('#player-name').value.trim();}
-function prepare(){
+function prepare(level=1){
  const field=$('#player-name'),name=field.value.trim();
  if(active()&&name&&!validName(name)){field.setAttribute('aria-invalid','true');$('#player-error').hidden=false;$('#player-error').textContent='Use 3–24 English letters, numbers, spaces, dots, underscores or hyphens.';field.focus();return false;}
- attemptName=active()?name:'';field.value=attemptName;$('#ranked-mode').checked=Boolean(attemptName);field.removeAttribute('aria-invalid');$('#player-error').hidden=true;return true;
+ attemptName=active()?name:'';field.value=attemptName;$('#ranked-mode').checked=Boolean(attemptName);field.removeAttribute('aria-invalid');$('#player-error').hidden=true;
+ if(embedded){const url=new URL(location.href),next=new URLSearchParams(url.hash.slice(1));next.set('level',String(level));if(attemptName){next.set('ranked','1');next.set('player',attemptName);}else{next.delete('ranked');next.delete('player');}url.hash=next.toString();if(url.href!==location.href)location.replace(url.href);}
+ return true;
 }
 function app(){
  if(client)return client;

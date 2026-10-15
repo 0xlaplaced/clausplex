@@ -57,7 +57,7 @@ function loadEngineParts(){
 }
 async function start(){
  if(started)return;
- if(!replay&&window.ClausRankings?.prepare()===false)return;
+ if(!replay&&window.ClausRankings?.prepare(selected)===false)return;
  started=true;diagnostics.level=selected;$('#home').hidden=true;$('#play').hidden=false;document.body.classList.add('is-playing');$('#loading').hidden=false;$('#retry-load').hidden=true;$('#load-status').textContent='Downloading the game…';$('#start').disabled=true;
  if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Ranked attempt · fixed seed. Finish the level to submit your replay for verification.';$('#live-label').textContent='RANKED ATTEMPT';}
  if(replay){$('#mode-label').textContent='WATCH / ORIGINAL SOLUTION';$('#live-label').textContent='ORIGINAL SOLUTION PLAYING';$('#pause').disabled=true;}
