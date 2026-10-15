@@ -43,6 +43,28 @@ for(let cycle=1;cycle<=2;cycle++){
  equal((await call('/boards?level=1&assisted=true')).data.entries[0].name,'Assisted QA');
  // A rejected replay is recorded but cannot enter either table.
  const data4={...data,runId:crypto.randomUUID(),name:'Rejected QA'};await call('/runs','POST',data4);await call('/internal/verdict','POST',{id:data4.runId,status:'rejected',steps:0,reason:'replay_not_a_valid_win',assisted:false},env.VERIFIER_KEY);equal((await call('/boards?level=1')).data.entries.length,1);
+ // Overall rankings: one entry per nickname, unique levels first, then summed best times.
+ const addScore=async(name,level,steps,assisted=false,status='verified')=>{
+  const run={...data,name,level,levelHash:catalog.levels[level-1].hash,seed:catalog.levels[level-1].seed,runId:crypto.randomUUID()};
+  equal((await call('/runs','POST',run)).status,202);
+  if(status!=='queued')equal((await call('/internal/verdict','POST',{id:run.runId,status,steps:status==='verified'?steps:0,reason:status==='verified'?'':'replay_not_a_valid_win',assisted},env.VERIFIER_KEY)).status,200);
+ };
+ let overall=await call('/boards');equal(overall.status,200);equal(overall.data.entries.length,2);
+ equal(overall.data.entries.find(x=>x.name.toLowerCase()==='tester one'),{name:'tester one',completedLevels:1,totalSteps:1});
+ await addScore('Progress Player',1,200);await addScore('Progress Player',2,300);
+ await addScore('progress player',1,150);await addScore('progress player',1,250);
+ await addScore('Faster Player',1,100);await addScore('Faster Player',2,200);
+ await addScore('One Fast Level',3,1);await addScore('Progress Player',3,1,false,'queued');
+ await addScore('Progress Player',4,1,false,'rejected');
+ await addScore('Assisted QA',2,25,true);
+ overall=await call('/boards');const rows=overall.data.entries;
+ equal(rows.map(x=>x.name.toLowerCase()),['assisted qa','faster player','progress player','one fast level','tester one']);
+ equal(rows.find(x=>x.name.toLowerCase()==='progress player').completedLevels,2);
+ equal(rows.find(x=>x.name.toLowerCase()==='progress player').totalSteps,450);
+ equal(rows.find(x=>x.name==='Assisted QA').completedLevels,2);
+ equal(rows.find(x=>x.name==='One Fast Level').completedLevels,1);
+ // Old published clients may still use the level endpoint during rollout.
+ equal((await call('/boards?level=2&assisted=true')).data.entries[0].name,'Assisted QA');
  db.close();reports.push({cycle,checks});
 }
 console.log(JSON.stringify({passed:true,reports}));

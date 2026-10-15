@@ -24,16 +24,17 @@ function enabled(){return active()&&$('#ranked-mode').checked;}
 function status(text){$('#result-score').textContent=text;}
 function friendly(e){return ['rate_limited','daily_limit','queue_full'].includes(e.message)?'The score service is busy. Your replay is still here; try Save again shortly.':'Your time has not saved yet. Check your connection, then choose Save again before leaving.';}
 async function loadBoard(){
- const sequence=++readSequence,level=Number($('#board-level').value),assisted=$('#board-category').value==='assisted';$('#board-status').textContent='Loading times…';$('#board-rows').replaceChildren();$('#board-refresh').disabled=true;
- try{if(!active())throw Error('offline_copy');const board=await api('/boards?level='+level+'&assisted='+assisted);if(sequence!==readSequence)return;const entries=(board.entries||[]).filter(e=>Number.isInteger(e.steps)&&e.steps>0&&e.steps<=cfg.maxSteps&&typeof e.name==='string'&&validName(e.name)&&typeof e.receiptId==='string').slice(0,10);
- for(const [i,e] of entries.entries()){const row=document.createElement('tr');for(const value of [String(i+1),e.name,time(e.steps)]){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}$('#board-rows').append(row);}
- $('#board-status').textContent=entries.length?'Best times for this level.':'No times here yet. Enter a name and finish this level to join automatically.';
- }catch(e){if(sequence===readSequence)$('#board-status').textContent=window.__CL_BASE?'Leaderboards need an internet connection. Open the published game to view times.':'Times could not load. Check your connection and try Refresh.';}finally{if(sequence===readSequence)$('#board-refresh').disabled=false;}
+ const sequence=++readSequence;$('#board-status').textContent='Loading leaderboard…';$('#board-rows').replaceChildren();$('#board-refresh').disabled=true;
+ try{if(!active())throw Error('offline_copy');const board=await api('/boards');if(sequence!==readSequence)return;
+ const entries=(board.entries||[]).filter(e=>Number.isInteger(e.completedLevels)&&e.completedLevels>0&&e.completedLevels<=CLAUS_DATA.levels.length&&Number.isInteger(e.totalSteps)&&e.totalSteps>=e.completedLevels&&e.totalSteps<=cfg.maxSteps*e.completedLevels&&typeof e.name==='string'&&validName(e.name)).slice(0,50);
+ for(const [i,e] of entries.entries()){const row=document.createElement('tr');for(const value of [String(i+1),e.name,e.completedLevels+' / '+CLAUS_DATA.levels.length,time(e.totalSteps)]){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}$('#board-rows').append(row);}
+ $('#board-status').textContent=entries.length?'Most levels completed first. Faster total time breaks a tie.':'No completed games yet. Enter a name and finish a level to join.';
+ }catch(e){if(sequence===readSequence)$('#board-status').textContent=window.__CL_BASE?'The leaderboard needs an internet connection. Open the published game to view it.':'The leaderboard could not load. Check your connection and try Refresh.';}finally{if(sequence===readSequence)$('#board-refresh').disabled=false;}
 }
 async function check(run=pending){
  if(!run?.saved)return;
  try{const result=await api('/runs/'+run.data.runId);if(run!==pending)return;
- if(result.status==='verified'){status('Saved · '+time(result.steps)+(result.assisted?' · Assisted':'')+'. Your best time is on the leaderboard.');return;}
+ if(result.status==='verified'){status('Saved · '+time(result.steps)+'. Your progress is on the leaderboard.');return;}
  if(result.status==='rejected'){status('This replay could not be verified. You can keep playing.');return;}
  status('Saved · '+time(run.data.steps)+'. Your time will appear after the automatic replay check.');
  }catch{if(run===pending)status('Your time is saved. The leaderboard will update after the replay check.');}
@@ -57,11 +58,10 @@ function finish(Module,level,won,recorded){
 $('#player-setup').hidden=!active();$('#ranked-link').hidden=active();$('#ranked-link').href=canonical;
 // Nickname-only public API: no Claus session, wallet request or host auth handshake.
 const route=new URLSearchParams(window.__CL_QUERY||(location.hash.startsWith('#level=')?location.hash.slice(1):location.search));const restoredName=route.has('ranked')?route.get('player')||'':'';$('#player-name').value=validName(restoredName)?restoredName:'';$('#ranked-mode').checked=active()&&validName(restoredName);
-$('#result-submit').onclick=()=>{$('#board-level').value=String(pending?.data.level||1);$('#board-nav').click();};
+$('#result-submit').onclick=()=>$('#board-nav').click();
 $('#score-retry').onclick=()=>save();
 $('#player-name').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();$('#start').click();}};
 $('#player-name').oninput=()=>{$('#ranked-mode').checked=Boolean($('#player-name').value.trim());$('#player-name').removeAttribute('aria-invalid');$('#player-error').hidden=true;};
-for(const level of CLAUS_DATA.levels){const o=document.createElement('option');o.value=level.number;o.textContent=String(level.number).padStart(3,'0')+' · '+level.name;$('#board-level').append(o);}
-$('#board-level').value=route.get('level')||1;$('#board-level').onchange=loadBoard;$('#board-category').onchange=loadBoard;$('#board-refresh').onclick=loadBoard;
+$('#board-refresh').onclick=loadBoard;
 window.ClausRankings={enabled,prepare,playerName,finish,loadBoard,time};
 })();

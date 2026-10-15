@@ -13,3 +13,9 @@ Actions secrets. No prize or account ownership is implied. Runtime stores at mos
 raising these bounds. Database migrations are schema-only in `drizzle/`.
 
 Build: `bash scripts/build.sh`; validate: `node scripts/validate-artifact.mjs`.
+
+`GET /boards` returns one overall table: unique completed levels descending, then
+the sum of each level’s best verified time ascending. Nickname grouping is case
+insensitive; replaying a level improves its best time without adding progress.
+All verified player completions share this table; watched solves never submit.
+The legacy `?level=N&assisted=false` query remains compatible with older clients.

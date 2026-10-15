@@ -75,20 +75,23 @@ registered on start and completed times save automatically. No wallet, sign-in,
 publication checkbox or Submit step. Leave the name blank for anonymous play;
 watched solves never save scores. Names carry between levels in the URL fragment.
 Names and best times are public. Nicknames are display labels, not reserved or
-verified accounts: matching names share one best entry per level and category.
+verified accounts: matching names share one overall entry.
 
 The result screen shows Saving, Saved or a retry action on connection failure.
 A saved replay persists on the service even if the player leaves. The scheduled
 GitHub verifier replays inputs in our pinned original engine before adding a time
 to the table. It runs every five minutes when GitHub schedules permit; delays are
-possible. This proves a valid solution, not human play. Original recordings are
-recognized automatically and listed in Assisted. The top ten best nickname times
-are displayed for each level/category. Time is simulation steps / 35, excluding
-pauses. No prizes, token, payment or NFT integration.
+possible. This proves a valid solution, not human play. One overall table ranks
+players by the number of different levels completed, then
+by the sum of their best times on those levels. Repeating a level only improves
+its best time; it never adds another completed level. All verified player
+completions contribute to the same table. The top 50 players are shown. Time is
+simulation steps / 35, excluding pauses. No prizes, token, payment or NFT integration.
 
 The public API origin is `scoresOrigin` in `backend/deployment.json`:
 `POST /players`, `POST /runs`, `GET /runs/{runId}`, and
-`GET /boards?level=1&assisted=false`. Only the server-side `VERIFIER_KEY` can read
+`GET /boards` (overall rankings). The older level query remains available for
+previous published clients during rollout. Only the server-side `VERIFIER_KEY` can read
 the private replay queue or post verdicts; its identical Actions secret is
 `CLAUS_SCORES_KEY`. The browser has no credential. Service source, schema and
 regression tests are archived in `backend/public-scores/`; its canonical deployment

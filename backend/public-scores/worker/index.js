@@ -59,6 +59,20 @@ export function createWorker(catalog){return {async fetch(request,env){try{
   return json({id:data.runId,status:'queued'},202);
  }
  if(path==='/boards'&&request.method==='GET'){
+  if(!url.searchParams.has('level')){
+   const {results}=await env.DB.prepare(`WITH best AS (
+    SELECT name_key,level,MIN(steps) AS steps FROM runs
+    WHERE status='verified' AND level BETWEEN 1 AND 37 GROUP BY name_key,level
+   ), totals AS (
+    SELECT name_key,COUNT(*) AS completedLevels,SUM(steps) AS totalSteps FROM best GROUP BY name_key
+   ), names AS (
+    SELECT name_key,name,ROW_NUMBER() OVER (PARTITION BY name_key ORDER BY created_at DESC,id) AS latest
+    FROM runs WHERE status='verified'
+   ) SELECT names.name,totals.completedLevels,totals.totalSteps FROM totals
+   JOIN names ON names.name_key=totals.name_key AND names.latest=1
+   ORDER BY totals.completedLevels DESC,totals.totalSteps,totals.name_key LIMIT 50`).all();
+   return json({entries:results});
+  }
   const level=Number(url.searchParams.get('level')),assisted=url.searchParams.get('assisted')==='true'?1:0;
   if(!Number.isInteger(level)||level<1||level>37)fail('invalid_level');
   const {results}=await env.DB.prepare('SELECT name,steps,id AS receiptId FROM (SELECT name,steps,id,ROW_NUMBER() OVER (PARTITION BY name_key ORDER BY steps,id) AS best FROM runs WHERE status=\'verified\' AND level=? AND assisted=?) WHERE best=1 ORDER BY steps,id LIMIT 10').bind(level,assisted).all();
