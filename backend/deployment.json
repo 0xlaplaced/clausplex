@@ -1,0 +1,9 @@
+{
+  "projectId": "prj_935f04f2-e8bb-4e2e-b559-0169a351beeb",
+  "verifierId": "agent_d0659644-03db-499f-8aa0-163fb13ce8eb",
+  "verifierExpiresAt": 1794662037505,
+  "origin": "https://claus-network-api.vercel.app",
+  "submissionLimitPerPlayerDay": 6,
+  "maxReplayBytes": 4096,
+  "maxSteps": 126000
+}

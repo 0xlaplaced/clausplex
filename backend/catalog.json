@@ -1,0 +1,267 @@
+{
+  "format": "clausplex-rle-v1",
+  "gameVersion": "sha256:b6653cb86dae4d1298e3d92d8affcfc2c374c4e0e185b8c9f273a430d6bf9d74",
+  "headlessSHA256": "9b44e9582ede419b67c640dd542606efedc85e0831a7798ecbf03e06ba25cc95",
+  "framesPerSecond": 35,
+  "levels": [
+    {
+      "number": 1,
+      "hash": "b92b4c0f27f12c3105463e7ccd8c52b5c740c83478862042b73b328b69eb8462",
+      "seed": 40977,
+      "referenceSteps": 1125,
+      "referenceReplayHash": "0e4f9f3f1322654104dc2c497efc2aadd20ee1ffeff2d7687a2e444ce1350597"
+    },
+    {
+      "number": 2,
+      "hash": "c6ffab0c1f76af7b6bf68ba07a7b358f92e37bc0eb03a48277cea3b349786d0a",
+      "seed": 42034,
+      "referenceSteps": 3421,
+      "referenceReplayHash": "a5b2c144c7cde2f10c72591949c7d8d2a15a24b0f192022cf0ca98eed1863e69"
+    },
+    {
+      "number": 3,
+      "hash": "d5f5ab89d3911bc2fd5d0c396240f213d338b4ce9afd4b79eadc52183c11c264",
+      "seed": 63631,
+      "referenceSteps": 7312,
+      "referenceReplayHash": "17b91d2951616a2bfaacc0da165e75d68572337ffe29630bae5a0e2a769aa6cb"
+    },
+    {
+      "number": 4,
+      "hash": "da101d8c73d00a6afd05bf9dfb6e01b6930ff2cebe0e75b88e81ee9d7e7efac7",
+      "seed": 14592,
+      "referenceSteps": 22386,
+      "referenceReplayHash": "d2c81a519e0d908ec77cc48fa19caf3a5df91fbecebe9d5d8058e832bc70fa05"
+    },
+    {
+      "number": 5,
+      "hash": "57d9fea9cf95774c6e1a662cc597632d59f8783bbf05eedcd8dcea87f03d2602",
+      "seed": 23264,
+      "referenceSteps": 16898,
+      "referenceReplayHash": "48a5c5f3717094bf998acf5e3af27e2a34111ca12a33996bd180d523225bf8c3"
+    },
+    {
+      "number": 6,
+      "hash": "1d81af050687b57c21d89b550540717e35148f5dfa0baccf38aa5f0eced5017e",
+      "seed": 3082,
+      "referenceSteps": 8815,
+      "referenceReplayHash": "1300524bb3b42a424dd6fb3fb3de9127d90e4507a4fb38b177a0164e396f6191"
+    },
+    {
+      "number": 7,
+      "hash": "636297f0f36d5bdb4388c8cbce137996af7dc2d5806ce69a96c82c277b1ca27a",
+      "seed": 45179,
+      "referenceSteps": 18651,
+      "referenceReplayHash": "7cebb9f178981f8d4843d2c1a12ecfb1a1019ca931832ab2350238034806b37b"
+    },
+    {
+      "number": 8,
+      "hash": "23cc7fe372c576813e1b8d5cabb28678eb2a57a6f8b36a549a8384adc7228976",
+      "seed": 31409,
+      "referenceSteps": 23968,
+      "referenceReplayHash": "c5c14c1bd2740b01c358a13c8d297e0b52a237a631a18633b1346559c2cc9d05"
+    },
+    {
+      "number": 9,
+      "hash": "39a4811cc73af8b7b885e3d1fb7c39b9f38d562fb16489d4e2f8dcb857a9ec5d",
+      "seed": 36996,
+      "referenceSteps": 16604,
+      "referenceReplayHash": "fa911675979a31164faeb7148ca7f96b6826fac5dd21a7af40c5775e6ee93a9a"
+    },
+    {
+      "number": 10,
+      "hash": "8c5c25af6f270d6d8a5cd2d9d922b4d1995368cdc15a068a69e01c77beaa9f3e",
+      "seed": 41308,
+      "referenceSteps": 6463,
+      "referenceReplayHash": "e0437d8025b37656d2c7383d784f5b5b82dfa99008ae378bfb3678c07aff0490"
+    },
+    {
+      "number": 11,
+      "hash": "b75e510e5c2e7e0f7b2c071fef52f14d440a0ed6b86fe628ac8c2fdffc8e7dad",
+      "seed": 47901,
+      "referenceSteps": 18165,
+      "referenceReplayHash": "abf44382596c62c99a408564b7a4bb9ac06e3f05136baeba9054778bffc5bd21"
+    },
+    {
+      "number": 12,
+      "hash": "ff08f91186a6506f7392940d4a847d4fa6b54dca8a94f693f176d06abda16057",
+      "seed": 30529,
+      "referenceSteps": 25197,
+      "referenceReplayHash": "406a77b932536666d20627a60b748917e17e4902af6e025812c193048959ab9b"
+    },
+    {
+      "number": 13,
+      "hash": "efbabfbd56f8f768d3bdc49104b3985281438c3424df6fc1e21fad2af33db971",
+      "seed": 41670,
+      "referenceSteps": 22795,
+      "referenceReplayHash": "0ac81823af2c4125ac014439ce7a2139bfd7cc6086920b31b9696773c230bc26"
+    },
+    {
+      "number": 14,
+      "hash": "72fa9475afe2392c56b5c4f941bbaf15e36637bcc237524a6d2b20fe70567d12",
+      "seed": 60548,
+      "referenceSteps": 11314,
+      "referenceReplayHash": "8c871287340354da1f55292374811429a9334bb4cdcf1a59e6d694f13119461c"
+    },
+    {
+      "number": 15,
+      "hash": "249a8cb3e93da50de073341c4a557b950fabd23499ebaa20b88d6fbfff46bb4f",
+      "seed": 21935,
+      "referenceSteps": 8435,
+      "referenceReplayHash": "05beb5411b95d35556bafd66a8695da0d7aed82e506f19a3d7d5e0af51e6acd2"
+    },
+    {
+      "number": 16,
+      "hash": "f944e05545d532955d0cb4780eaf6ae60a7543da3bec9961e9ddc323ba67f152",
+      "seed": 29230,
+      "referenceSteps": 12380,
+      "referenceReplayHash": "609295007c12691689856b15a0707ea445e4381895cfe3221c517ed3e684ffb7"
+    },
+    {
+      "number": 17,
+      "hash": "0c3b193c0959d1f9c7954789a54ebc60c38193bba4f5df3eb3663359b0d34c2d",
+      "seed": 41885,
+      "referenceSteps": 5517,
+      "referenceReplayHash": "3c056b25649230e92b7a18132e0585e508656e63d9651881f5630e2ebd40201b"
+    },
+    {
+      "number": 18,
+      "hash": "0df6c3b464b69479016ba8559eabbbfc31cd15aaf5c0775df207c864d64e3cf7",
+      "seed": 38922,
+      "referenceSteps": 17,
+      "referenceReplayHash": "4cb8c76209706e9ae6da0179add0305879d7c8f99e03581ce3127d2c1e7ad7df"
+    },
+    {
+      "number": 19,
+      "hash": "e395ccf9d8f6d4a7af03be4b561440c6a6713e66509126dbc79ee2161a18003b",
+      "seed": 35034,
+      "referenceSteps": 16586,
+      "referenceReplayHash": "aea6b0eff756aa98d3611b1f8c56c9a5b5af67f44dac32eeed6c05841e3f6bdf"
+    },
+    {
+      "number": 20,
+      "hash": "b10dc1a63295a7095eda9340ce546cfee1753029557be1fd5184ae76a69eeff0",
+      "seed": 3010,
+      "referenceSteps": 6371,
+      "referenceReplayHash": "ee26ef0f5ffee7c61a5f6d2835b909603eb373e2382b8bb35f5f79ead49faff1"
+    },
+    {
+      "number": 21,
+      "hash": "c6e167d21d3348f2d3a796ed7586e9ef1ca9c56a6b7a996707dff9d725afabee",
+      "seed": 27674,
+      "referenceSteps": 3908,
+      "referenceReplayHash": "c0d1be1ca8eb24b5dbabd708912852624dacf56d984de4b660de6048eb238df1"
+    },
+    {
+      "number": 22,
+      "hash": "fbe94309152040528cd11a81e112c72db905b368973c20ad59f0496822e6b627",
+      "seed": 8398,
+      "referenceSteps": 4248,
+      "referenceReplayHash": "576eba2e71d47121515621b0d8050aab5bfdb9fcc77cacb8ab9b63e1e6f5a997"
+    },
+    {
+      "number": 23,
+      "hash": "6bb41040c745b4cd667da562ba2b36b57f5b600adaa33e140cc0a35e59ec8df1",
+      "seed": 32402,
+      "referenceSteps": 16491,
+      "referenceReplayHash": "05d507be73362442d043a41bc979229f4c51946d991dc0df9543ec260b98bba9"
+    },
+    {
+      "number": 24,
+      "hash": "02f14b9cfc7a1e5adfae3995ad31644e04a250c1149cc120cf9e585741a55941",
+      "seed": 24496,
+      "referenceSteps": 7128,
+      "referenceReplayHash": "b7b983d12247e01028eb05376bc3859b85abc0f5c06563e9cea586d947a86bf9"
+    },
+    {
+      "number": 25,
+      "hash": "4bce6ec9b0a267d9d1afd6ea6da953c6262aee6e900612ec314b197ecd60e9d7",
+      "seed": 28327,
+      "referenceSteps": 13339,
+      "referenceReplayHash": "c2c88f50bd76c9551d0815600b7cbc28af2238f79f547252985c570bd268fd3c"
+    },
+    {
+      "number": 26,
+      "hash": "129421ffacc00c5c57d381abb600896b7560cb9cf5a407d18361117adac013fb",
+      "seed": 24479,
+      "referenceSteps": 398,
+      "referenceReplayHash": "a4463039b7354472c3a0e1d09403af8d1b25b1900c31ba67a413ddf2cc72b1aa"
+    },
+    {
+      "number": 27,
+      "hash": "b137933470185b8c65d66baf6b90baa16746ded4ab8bcd527c88139ff014f07e",
+      "seed": 54906,
+      "referenceSteps": 14468,
+      "referenceReplayHash": "0cc75e3670681dd7606f237b9d8010b7b2f251ecd0b612c53f94812e02d5e7cc"
+    },
+    {
+      "number": 28,
+      "hash": "34c47020bdfe93392a728c52d79ce5f76960b78a4d14b8bcc4e2716f0cc86820",
+      "seed": 15721,
+      "referenceSteps": 9425,
+      "referenceReplayHash": "017f0f472836d388ea776d18fccf8e0bb9a1832b65e8276e5b53accb18817990"
+    },
+    {
+      "number": 29,
+      "hash": "9179f47799dbb8d6c71dd2a38648867192e2e9b92c02f82f5d4045a43f907612",
+      "seed": 18016,
+      "referenceSteps": 18682,
+      "referenceReplayHash": "3333c233c4e8e1ccb41ba569fd4fd4b4d4170e12236dba6f640fc6b4a62b5716"
+    },
+    {
+      "number": 30,
+      "hash": "9b3398f669760e47cdb78061dbac9f6f763da7029ec10f8eca28ad6a3b4e4edc",
+      "seed": 12270,
+      "referenceSteps": 4516,
+      "referenceReplayHash": "59ecdf757d569974043119c7485aa8c423952f1982cfd55f3f534a36c2f54f99"
+    },
+    {
+      "number": 31,
+      "hash": "dee1f9d108b3ec88f074c5e82fdb07ad5b78b2a3b15c53226f456af626a17527",
+      "seed": 35535,
+      "referenceSteps": 11197,
+      "referenceReplayHash": "c83b7a6434f5e0148a6eedd1e5810f47948ed89fff4b1702a532f99493eb58c3"
+    },
+    {
+      "number": 32,
+      "hash": "5138d89f1f4fe985049b33f0b5bd938ff0872afb9e98a91eedf04833e158db33",
+      "seed": 56298,
+      "referenceSteps": 13334,
+      "referenceReplayHash": "8492971ef7a9886a14e891b710439428a3d46b3e2e723dd64761240f9c82ff07"
+    },
+    {
+      "number": 33,
+      "hash": "54861c2354049cd7cdb19106fbbab03311ff030ddcff1a261db78b4646284e7a",
+      "seed": 33494,
+      "referenceSteps": 3484,
+      "referenceReplayHash": "da405c54c18e9b27dc11427d5a43741b737536d3f5837f47850bb862347c14e7"
+    },
+    {
+      "number": 34,
+      "hash": "32fece2d70988ee28786e7cdf2840d46334d6d68d91254c5f683d31d2fee1ce6",
+      "seed": 24122,
+      "referenceSteps": 16962,
+      "referenceReplayHash": "67d5b405b64506a2922d505a6abd0ce1e12dcc46d42d0317cd3ed31213a32c69"
+    },
+    {
+      "number": 35,
+      "hash": "996b587ee013cc9610180538ee722bab614c705c3e9c99ba2ec88b12cc6894d4",
+      "seed": 64329,
+      "referenceSteps": 10712,
+      "referenceReplayHash": "7806b8c41de935d7f276cbe3f862c83f751466720df6f89cd04d58726ca45c17"
+    },
+    {
+      "number": 36,
+      "hash": "5c850610b73ab1711f8eb025fdfa428a09523b1247555ea369c0f83ef21f4a48",
+      "seed": 16706,
+      "referenceSteps": 11534,
+      "referenceReplayHash": "49c9b76e790b4fe374a2fb64967801601e636cac1071cd09e61a83e15faea842"
+    },
+    {
+      "number": 37,
+      "hash": "7922cb942c0bb76e706efcefb70c2b30368a41fe17c1943feeff110250d81ef3",
+      "seed": 60992,
+      "referenceSteps": 13815,
+      "referenceReplayHash": "8f1e3ef04274532a7b8677b6cbb6104c03ffc885d47f589882b6ed10e6f5a988"
+    }
+  ]
+}

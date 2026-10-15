@@ -20,7 +20,7 @@ if(!frame.srcdoc.includes('window.__CL_QUERY="?level=80&play=1"'))throw Error('I
 listener({source:{},data:{clausNavigate:'?level=2&play=1'}});
 if(!frame.srcdoc.includes('window.__CL_QUERY="?level=80&play=1"'))throw Error('Foreign frame changed navigation');
 let inner=scripts(frame.srcdoc);for(const [i,s] of inner.entries()){new vm.Script(s,{filename:'offline-child-'+i});checked++;}
-if(inner.length!==6)throw Error('Wrong embedded child script count: '+inner.length);
+if(inner.length!==7)throw Error('Wrong embedded child script count: '+inner.length);
 listener({source:frame.contentWindow,data:{clausNavigate:'?level=111&play=1'}});
 if(!frame.srcdoc.includes('window.__CL_QUERY="?level=111&play=1"'))throw Error('Restart query not forwarded');
 if(/<script src=|<link[^>]+href="(?:theme|https?:)/.test(frame.srcdoc))throw Error('Unexpected remote dependency');

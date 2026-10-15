@@ -15,5 +15,5 @@ class Handler(SimpleHTTPRequestHandler):
     def log_message(self,fmt,*args):
         with (R/'server.log').open('a') as f:f.write(fmt%args+'\n')
 server=ThreadingHTTPServer(('127.0.0.1',0),Handler);origin=f'http://127.0.0.1:{server.server_port}'
-CSP=f"sandbox allow-scripts; default-src 'none'; script-src 'unsafe-inline' {origin}; style-src 'unsafe-inline' {origin}; img-src data: {origin}; connect-src 'none'; worker-src 'none'; font-src data:; media-src data:; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; frame-ancestors {origin}"
+CSP=f"sandbox allow-scripts; default-src 'none'; script-src 'unsafe-inline' {origin}; style-src 'unsafe-inline' {origin}; img-src data: {origin}; connect-src https://claus-network-api.vercel.app; worker-src 'none'; font-src data:; media-src data:; form-action 'none'; base-uri 'none'; object-src 'none'; frame-src 'none'; frame-ancestors {origin}"
 print(origin,flush=True);server.serve_forever()

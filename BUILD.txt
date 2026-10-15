@@ -3,14 +3,15 @@ CLAUSPLEX PART I / 1.0 — corresponding source and artwork
 Based on OpenSupaplex 7.2.2, commit
 bad56a4e174e628643995284ea55d4c49af3137c.
 
-The full modified src tree is included under source/src. The gameplay file
-supaplex.c, animation descriptors, conditionals, level data and collision rules
-are unchanged. Four upstream C files are adapted:
+The full modified src tree is included under source/src. Animation descriptors, puzzle maps and collision rules are preserved.
+supaplex.c has three recording lifecycle hooks and an input observer; these do
+not alter physics. Ranked mode alone pins the initial RNG seed. Other adapted files:
   graphics.c: Claus color palette.
   sdl2/video.c: display the original 320x176 playfield above the HTML HUD.
   sdl2/keyboard.c: merge a touch-control bitmask with ordinary keyboard input.
   sdl_common/system.c: wait while the web UI is paused; exclude paused time; observe and latch the real completion flag.
-bridge.c contains the small web adapter and read-only state accessors.
+bridge.c contains the web adapter, read-only state accessors, bounded input RLE
+recorder and an optional ranked seed override.
 A win is latched from byte_5A19B. A quit countdown alone does not mean death.
 The UI pauses on completion and navigates explicitly to the next level.
 
@@ -85,3 +86,19 @@ LEVELS.DAT contains exactly the first 37 original 1536-byte records.
 The unchanged engine retains its 111-entry menu catalog structure; entries
 38–111 are labeled unavailable and have no level maps in this distribution.
 Do not regenerate the resources from the full upstream set.
+
+VERIFIED REPLAY BUILD
+After changing C code, build both engines, then regenerate the catalog:
+  python3 build-portable.py --headless
+  python3 scripts/build-verifier.py
+  python3 build-portable.py
+  python3 scripts/rebuild-site.py
+  node tests/test-verifier.mjs 1
+  node tests/test-verifier.mjs 2
+  node tests/test-rankings.mjs
+The catalog hashes all C source and bridge.c, original maps and the headless
+engine. Both engines must be rebuilt from that source revision. Ranked build
+changes intentionally separate scores; publish frontend and verifier together.
+backend/engine.cjs is the precompiled headless verifier for Actions. backend/ is
+not included in the static game upload. No credential is required to rebuild,
+play anonymously, run local validation, or read the published leaderboard.

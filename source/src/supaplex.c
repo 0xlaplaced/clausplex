@@ -3977,6 +3977,11 @@ void initializeGameInfo() // sub_48A20   proc near       ; CODE XREF: start+32F
     gPlantedRedDiskPosition = 0;
 }
 
+/* Read-only replay instrumentation; the simulation rules remain unchanged. */
+extern void claus_run_begin(void);
+extern void claus_capture_input(int input);
+extern void claus_run_finished(void);
+
 void handleGameIterationStarted()
 {
     gGameIterationStartTime = getTime();
@@ -4062,6 +4067,7 @@ void runLevel() //    proc near       ; CODE XREF: start+35Cp
     gPlantedRedDiskCountdown = 0;
     byte_5A323 = 0;
 
+    claus_run_begin();
     do
     {
         handleGameIterationStarted();
@@ -4227,6 +4233,7 @@ void runLevel() //    proc near       ; CODE XREF: start+35Cp
     }
 
     // loc_48E13:              ; CODE XREF: runLevel+353j
+    claus_run_finished();
     uint8_t userDidNotCheat = (gHasUserCheated == 0);
     gHasUserCheated = 0;
     if (userDidNotCheat && gShouldUpdateTotalLevelTime != 0 && byte_5A323 == 0)
@@ -4622,6 +4629,8 @@ void handleGameUserInput() // sub_4955B   proc near       ; CODE XREF: runLevel:
     {
         simulateDemoInput(); // 01ED:2929
     }
+
+    claus_capture_input(gCurrentUserInput);
 
     // loc_4958F:              ; CODE XREF: handleGameUserInput+2Fj
     if (gToggleGamePanelKeyAutoRepeatCounter != 0) // cmp byte ptr word_510C1+1, 0

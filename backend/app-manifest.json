@@ -1,0 +1,214 @@
+{
+  "name": "Clausplex verified times",
+  "description": "Opt-in replay submissions and server-verified puzzle times. Playing remains anonymous. No prizes; verification is not proof of human play.",
+  "participation": "open",
+  "collections": [
+    {
+      "id": "runs",
+      "visibility": "public",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "format": {
+            "type": "string",
+            "maxLength": 32,
+            "enum": [
+              "clausplex-rle-v1"
+            ]
+          },
+          "gameVersion": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 37
+          },
+          "levelHash": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 65535
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 126000
+          },
+          "replay": {
+            "type": "string",
+            "maxLength": 5464
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 24
+          },
+          "runId": {
+            "type": "string",
+            "maxLength": 36
+          },
+          "assisted": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "format",
+          "gameVersion",
+          "level",
+          "levelHash",
+          "seed",
+          "steps",
+          "replay",
+          "name",
+          "runId",
+          "assisted"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "receipts",
+      "visibility": "public",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "submissionId": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "inputHash": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "playerId": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 37
+          },
+          "name": {
+            "type": "string",
+            "maxLength": 24
+          },
+          "steps": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 126000
+          },
+          "replayHash": {
+            "type": "string",
+            "maxLength": 64
+          },
+          "outcome": {
+            "type": "string",
+            "maxLength": 12,
+            "enum": [
+              "verified",
+              "rejected",
+              "duplicate"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "assisted": {
+            "type": "boolean"
+          },
+          "gameVersion": {
+            "type": "string",
+            "maxLength": 80
+          }
+        },
+        "required": [
+          "submissionId",
+          "inputHash",
+          "playerId",
+          "level",
+          "name",
+          "steps",
+          "replayHash",
+          "outcome",
+          "reason",
+          "assisted",
+          "gameVersion"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "boards",
+      "visibility": "public",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "level": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 37
+          },
+          "gameVersion": {
+            "type": "string",
+            "maxLength": 80
+          },
+          "entries": {
+            "type": "array",
+            "maxItems": 40,
+            "items": {
+              "type": "object",
+              "properties": {
+                "playerId": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 24
+                },
+                "steps": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 126000
+                },
+                "receiptId": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "replayHash": {
+                  "type": "string",
+                  "maxLength": 64
+                },
+                "assisted": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "playerId",
+                "name",
+                "steps",
+                "receiptId",
+                "replayHash",
+                "assisted"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "level",
+          "gameVersion",
+          "entries"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ],
+  "tasks": null
+}

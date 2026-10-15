@@ -12,7 +12,7 @@ A free, independent community adaptation of OpenSupaplex with Claus artwork and 
 
 Collect the required sparks and find the exit. Use the arrow keys to move; hold Space and a direction to grab an adjacent object. Press P to pause and R to restart. Touch controls are available on narrow screens.
 
-No wallet, account, installation, or payment is required. The game is silent and progress is not saved; choose any of the 37 puzzles from **Levels**.
+No wallet, account, installation, or payment is required to play. The game is silent and progress is not saved; choose any of the 37 puzzles from **Levels**.
 
 The puzzle maps, collision rules, timing, and gameplay simulation are preserved. Clausplex provides a new interface, terrain artwork, and a little Claus character over the OpenSupaplex engine.
 
@@ -28,7 +28,7 @@ Open <http://localhost:8000/>. No application dependencies or API keys are neede
 
 ## Edit and rebuild the interface
 
-Edit `index.html`, `app.js`, or `theme.css`, then run:
+Edit `index.html`, `app.js`, `rankings.js`, or `theme.css`, then run:
 
 ```sh
 python3 scripts/rebuild-site.py
@@ -64,6 +64,36 @@ python3 test-portable.py
 ```
 
 The Part I release passed 37/37 recorded solution simulations, 37/37 result and navigation unit checks, and 7/7 loader unit checks. Browser smoke checks covered loading, level selection, levels 1 and 37, and returning home. These are not a complete manual playthrough of every puzzle.
+
+## Optional verified times
+
+On the canonical Claus page, enable **Ranked attempt** before playing. Ranked attempts use a fixed original puzzle seed; ordinary play keeps the original seed behavior. Win the level, choose a public name, confirm publication, and submit. Sign in using the official Claus page when requested. No transaction, token, NFT, payment, or prize is involved. GitHub Pages supports anonymous play and reading the same leaderboard; submissions use the canonical Claus shell.
+
+The browser records the inputs actually consumed by the C simulation, seed, original map hash, build identity and simulation steps. A scheduled GitHub Action reconstructs the original map and replays those inputs in the same headless engine. Only a genuine winning replay produces a verified receipt. Times are server-calculated steps / 35; the displayed game clock is not trusted. Public reads pin the verifier's server-assigned author ID. Arbitrary records claiming to be verified are ignored.
+
+There are Standard and Assisted categories, with each player's best time in each category and the top ten displayed. Known original solve recordings are automatically assisted. Replay verification proves a valid solution, **not human play**; scripts, shared solutions and multiple accounts cannot be reliably excluded. Names are public, unverified aliases; player IDs and submitted inputs are public too. Play anonymously if you do not want a persistent public submission.
+
+Verification is queued, normally checked every five minutes. GitHub can delay or disable schedules; use **Check verification** later or the public leaderboard. The action can also be dispatched manually. Your Mac does not need to stay on. Pending unsent input recordings live only in the current page; leaving discards them. After submission the public queue persists independently of the browser.
+
+Run the two-cycle regression suite:
+
+```sh
+node tests/test-verifier.mjs 1
+node tests/test-verifier.mjs 2
+node tests/test-rankings.mjs
+```
+
+This validates all 37 captured solutions twice, rejects malformed or incomplete inputs, checks process deadlines, forged records, duplicate submissions, cooldowns, daily limits, category isolation, best times, and recovery after lost replies or a crash between receipt and leaderboard writes. UI unit tests use stubs; live integration and browser checks are documented separately.
+
+### Operations and limits
+
+The worker's `CLAUS_VERIFIER_TOKEN` exists only in GitHub encrypted Actions secrets. It is an app.use-only delegated credential, not an owner credential or wallet key. Its public principal/expiry are in `backend/deployment.json`. Claus limits mandates to 30 days; renew the credential and encrypted secret before expiry, update the public expiry, rebuild and publish. If it expires, ranked submission is disabled and the worker reports paused; anonymous play and existing times remain available. Do not commit a credential to this repository.
+
+Each player gets at most six submissions per UTC day, at least 60 seconds apart. The worker handles at most ten per batch, at most two per player. Replays are limited to 4096 encoded input bytes and 126000 steps; actual encoding may hit the byte limit earlier. Each replay runs in a credential-free child process with a 12-second deadline, output cap and 256 MiB JavaScript heap cap, using only repository-controlled maps and code. This bounds work; it does not stop a Sybil attack or prevent an attacker exhausting the platform's shared quotas.
+
+Claus managed apps currently have 5000 records, 1000 mutations/day/app, 200/day/actor and 1000 memberships. A verified submission generally uses a run, receipt and board mutation. Monitor Actions errors and collection usage; additional capacity or an archival design is needed before these limits. Do not delete the receipt ledger without rebuilding the materialized boards. Keep the verifier ID pinned when rotating a credential for the same principal; migrating principals requires an explicit data migration.
+
+The public API is the Claus managed records endpoint: `/v1/public/apps/{projectId}/records?collection=boards&authorId={verifierId}&limit=100`, using the origin, project and verifier IDs from `backend/deployment.json`. Follow `nextCursor` using `after`. Receipts and runs use the same endpoint with their collection names. Consumers must check `authorId`, gameVersion and schema, and must not trust a client-set flag. Ordinary anonymous plays are not counted or tracked.
 
 ## Source and credits
 
