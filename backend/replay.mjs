@@ -13,7 +13,7 @@ export function validate(data){
  if(!data||Array.isArray(data)||Object.keys(data).sort().join()!==required.join())throw Error('invalid_fields');
  if(Buffer.byteLength(JSON.stringify(data))>7500)throw Error('submission_too_large');
  if(data.format!=='clausplex-rle-v1'||data.gameVersion!==catalog.gameVersion)throw Error('unsupported_game_version');
- if(!Number.isInteger(data.level)||data.level<1||data.level>37)throw Error('invalid_level');
+ if(!Number.isInteger(data.level)||data.level<1||data.level>catalog.levels.length)throw Error('invalid_level');
  const level=catalog.levels[data.level-1];
  if(data.levelHash!==level.hash||data.seed!==level.seed)throw Error('level_or_seed_mismatch');
  if(typeof data.name!=='string'||!/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(data.name)||data.name!==data.name.trim())throw Error('invalid_display_name');

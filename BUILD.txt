@@ -1,4 +1,4 @@
-CLAUSPLEX PART I / 1.0 — corresponding source and artwork
+CLAUSPLEX / 2.0 — corresponding source and artwork
 
 Based on OpenSupaplex 7.2.2, commit
 bad56a4e174e628643995284ea55d4c49af3137c.
@@ -56,7 +56,7 @@ CHECKS
   python3 build-portable.py --headless
   python3 test-portable.py
 
-The 37 included recordings are original solutions, one matching each original
+The 111 included recordings are original solutions, one matching each original
 level map. Their provenance and original filenames are in tests/manifest.json.
 They retain their respective authors' rights. The headless build uses the same
 simulation with the null video driver; this verifies gameplay, not image quality.
@@ -81,11 +81,10 @@ contributors. New sprite/background artwork and the HTML interface were authored
 for this adaptation. This is an independent fan prototype, not an official Claus
 game. Source and test material are provided for further local development.
 
-PART I RESOURCE SELECTION
-LEVELS.DAT contains exactly the first 37 original 1536-byte records.
-The unchanged engine retains its 111-entry menu catalog structure; entries
-38–111 are labeled unavailable and have no level maps in this distribution.
-Do not regenerate the resources from the full upstream set.
+FULL RESOURCE SET
+LEVELS.DAT contains all 111 original 1536-byte records. LEVEL.LST retains the
+original 111-entry catalog. The first 37 maps, fixed seeds and replay identities
+are unchanged from the initial release, preserving existing leaderboard scores.
 
 VERIFIED REPLAY BUILD
 After changing C code, build both engines, then regenerate the catalog:

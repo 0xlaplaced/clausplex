@@ -36,7 +36,7 @@ export async function processQueue({client,max=10,now=Date.now(),verify=verifyRe
    if(['verifier_build_mismatch','verifier_level_mismatch'].includes(error.message))throw error;
    outcome='rejected';reason=/^[a-z_]+$/.test(error.message)?error.message:'verification_failed';
   }
-  const receiptData={submissionId:run.id,inputHash:ih,playerId:player,level:Number.isInteger(data.level)&&data.level>=1&&data.level<=37?data.level:1,name:typeof data.name==='string'&&/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(data.name)?data.name:'Invalid entry',steps:result.steps,replayHash:result.replayHash,outcome,reason,assisted:result.assisted,gameVersion:catalog.gameVersion};
+  const receiptData={submissionId:run.id,inputHash:ih,playerId:player,level:Number.isInteger(data.level)&&data.level>=1&&data.level<=catalog.levels.length?data.level:1,name:typeof data.name==='string'&&/^[A-Za-z0-9][A-Za-z0-9 ._-]{2,23}$/.test(data.name)?data.name:'Invalid entry',steps:result.steps,replayHash:result.replayHash,outcome,reason,assisted:result.assisted,gameVersion:catalog.gameVersion};
   const receipt=await client.create('receipts',receiptData,'verdict:'+hash(run.id));
   processed.set(run.id,receipt);
   report[outcome]++;report.processed++;

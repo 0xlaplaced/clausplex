@@ -1,10 +1,10 @@
 'use strict';
 const $=s=>document.querySelector(s), params=new URLSearchParams(location.hash.startsWith('#level=')?location.hash.slice(1):location.search);
-const clampLevel=n=>Math.max(1,Math.min(37,Number(n)||1));
+const clampLevel=n=>Math.max(1,Math.min(CLAUS_DATA.levels.length,Number(n)||1));
 let selected=clampLevel(params.get('level')),started=false,ready=false,finished=false,paused=false,wasPausedForDialog=false,violations=0,lastRemaining=-1,startFrame=0;
 const replay=params.has('replay'),test=params.has('test');
 if(replay&&![1,2,3,5,10,20].includes(selected))selected=1;
-const diagnostics={version:'Clausplex Part I / 1.0',cspViolations:0,errors:[],level:selected,replay};
+const diagnostics={version:'Clausplex / 2.0',cspViolations:0,errors:[],level:selected,replay};
 const atlas=new Image();atlas.src='data:image/svg+xml,'+encodeURIComponent(CLAUS_DATA.atlas);
 const tileUrl='url("data:image/svg+xml,'+encodeURIComponent(CLAUS_DATA.atlas)+'")';
 for(const a of CLAUS_DATA.levels){const packed=Uint8Array.from(atob(a.rle),c=>c.charCodeAt(0)),tiles=new Uint8Array(1440);let pos=0;for(let i=0;i<packed.length;i+=2){tiles.fill(packed[i+1],pos,pos+packed[i]);pos+=packed[i];}if(pos!==1440)throw new Error('Invalid level preview');a.tiles=tiles;}
@@ -33,10 +33,10 @@ function showResult(won,recorded=false){
  finished=true;clearKeys();if(!recorded||replay)Module._claus_pause?.(1);
  $('#loading').hidden=true;$('#pause-overlay').hidden=true;$('#actor').hidden=true;$('#result').hidden=false;$('#pause').disabled=true;
  $('#result-kicker').textContent=recorded?'ORIGINAL SOLUTION':won?'LEVEL '+String(selected).padStart(3,'0')+' COMPLETE':'TRY A DIFFERENT PATH';
- $('#result-title').textContent=recorded?(won?'A way through.':'The solve stopped.'):won?(selected===37?'Part I. Made it.':'Made it, little Claus.'):'One more try?';
- $('#result-copy').textContent=recorded?(won?'The original solution, in a new world. Your turn.':'Try playing this level yourself.'):won?(selected===37?'The final maze of Part I is behind you. Thanks for playing.':'All required sparks collected. The next maze is ready.'):'Watch the falling rocks and try a different route.';
- $('#result-action').textContent=recorded?'Play this level →':won&&selected<37?'Next level · '+String(selected+1).padStart(3,'0')+' →':won?'Replay Part I →':'Try again →';
- $('#result-action').onclick=()=>navigate(recorded||!won?selected:selected===37?1:selected+1,true);
+ $('#result-title').textContent=recorded?(won?'A way through.':'The solve stopped.'):won?(selected===CLAUS_DATA.levels.length?'All 111. Made it.':'Made it, little Claus.'):'One more try?';
+ $('#result-copy').textContent=recorded?(won?'The original solution, in a new world. Your turn.':'Try playing this level yourself.'):won?(selected===CLAUS_DATA.levels.length?'All 111 mazes are behind you. Thanks for playing.':'All required sparks collected. The next maze is ready.'):'Watch the falling rocks and try a different route.';
+ $('#result-action').textContent=recorded?'Play this level →':won&&selected<CLAUS_DATA.levels.length?'Next level · '+String(selected+1).padStart(3,'0')+' →':won?'Play again →':'Try again →';
+ $('#result-action').onclick=()=>navigate(recorded||!won?selected:selected===CLAUS_DATA.levels.length?1:selected+1,true);
  $('#result-action').focus({preventScroll:true});announce($('#result-title').textContent);report(won?'success':'ended',{level:selected,recorded,remaining:diagnostics.remaining});
 }
 function navigate(level,auto=false,watch=false){const u=new URL(location.href);u.search='';const route=new URLSearchParams();route.set('level',clampLevel(level));if(auto)route.set('play','1');if(watch)route.set('replay','1');if(!watch&&typeof window!=='undefined'&&window.ClausRankings?.enabled()){route.set('ranked','1');const name=window.ClausRankings?.playerName?.();if(name)route.set('player',name);}if(test)route.set('test','1');u.hash=route.toString();const queryChanged=location.search!==u.search;location.href=u.href;if(!queryChanged)location.reload();}
@@ -59,6 +59,15 @@ function loadEngineParts(){
  }))).then(()=>{if(!complete())throw new Error('The game download is incomplete.');}).catch(e=>{engineLoadPromise=null;throw e;});
  return engineLoadPromise;
 }
+async function engineSource(){
+ const packed=window.__ospSourceParts.join('');
+ if(CLAUS_DATA.engineEncoding!=='gzip-base64')return packed;
+ if(typeof DecompressionStream!=='function')throw Error('This browser cannot unpack the game. Please use a current browser.');
+ const bytes=Uint8Array.from(atob(packed),c=>c.charCodeAt(0));
+ const text=await new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'))).text();
+ if(text.length!==CLAUS_DATA.engineSourceCharacters)throw Error('The game download is incomplete.');
+ return text;
+}
 async function start(){
  if(started)return;
  if(!replay&&window.ClausRankings?.prepare(selected)===false)return;
@@ -68,7 +77,7 @@ async function start(){
  try{
   await loadEngineParts();
   Module.arguments=gameArguments(selected,replay);
-  $('#load-status').textContent='Opening the maze…';const script=document.createElement('script');script.textContent=window.__ospSourceParts.join('');window.__ospSourceParts.length=0;document.body.appendChild(script);Module.canvas.focus({preventScroll:true});
+  $('#load-status').textContent='Opening the maze…';const script=document.createElement('script');script.textContent=await engineSource();window.__ospSourceParts.length=0;document.body.appendChild(script);Module.canvas.focus({preventScroll:true});
  }catch(e){started=false;$('#start').disabled=false;$('#load-status').textContent='The game could not download. Check your connection and try again.';$('#retry-load').hidden=false;$('#retry-load').focus();report('load-error',String(e.message));}
 }
 $('#start').onclick=start;$('#retry-load').onclick=start;$('#watch').onclick=()=>navigate(1,true,true);

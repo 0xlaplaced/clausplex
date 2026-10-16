@@ -1,4 +1,4 @@
-import fs from 'node:fs';
+import fs from 'node:fs';import {gunzipSync} from 'node:zlib';
 import vm from 'node:vm';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -9,7 +9,10 @@ let checked=0;
 const engineContext={window:{}};
 for(const f of fs.readdirSync(path.join(site,'game')).filter(f=>f.endsWith('.js'))){new vm.Script(fs.readFileSync(path.join(site,'game',f),'utf8'),{filename:f});checked++;}
 for(const f of fs.readdirSync(path.join(site,'game')).filter(f=>/^engine-\d+\.js$/.test(f)).sort())vm.runInNewContext(fs.readFileSync(path.join(site,'game',f),'utf8'),engineContext);
-new vm.Script(engineContext.window.__ospSourceParts.join(''),{filename:'joined-engine'});checked++;
+const data=JSON.parse(fs.readFileSync(path.join(site,'game/data.js'),'utf8').replace('const CLAUS_DATA=','').slice(0,-1));
+const packed=engineContext.window.__ospSourceParts.join('');const unpacked=data.engineEncoding==='gzip-base64'?gunzipSync(Buffer.from(packed,'base64')).toString():packed;
+if(unpacked!==fs.readFileSync(path.join(root,'build/game.js'),'utf8'))throw Error('Compressed engine mismatch');
+new vm.Script(unpacked,{filename:'joined-engine'});checked++;
 const offline=fs.readFileSync(path.join(site,'clausplex.html'),'utf8');
 const outer=scripts(offline);if(outer.length!==1)throw Error('Expected one wrapper script');
 new vm.Script(outer[0],{filename:'offline-wrapper'});
@@ -20,7 +23,7 @@ if(!frame.srcdoc.includes('window.__CL_QUERY="?level=80&play=1"'))throw Error('I
 listener({source:{},data:{clausNavigate:'?level=2&play=1'}});
 if(!frame.srcdoc.includes('window.__CL_QUERY="?level=80&play=1"'))throw Error('Foreign frame changed navigation');
 let inner=scripts(frame.srcdoc);for(const [i,s] of inner.entries()){new vm.Script(s,{filename:'offline-child-'+i});checked++;}
-if(inner.length!==7)throw Error('Wrong embedded child script count: '+inner.length);
+if(inner.length!==data.engineParts+3)throw Error('Wrong embedded child script count: '+inner.length);
 listener({source:frame.contentWindow,data:{clausNavigate:'?level=111&play=1'}});
 if(!frame.srcdoc.includes('window.__CL_QUERY="?level=111&play=1"'))throw Error('Restart query not forwarded');
 if(/<script src=|<link[^>]+href="(?:theme|https?:)/.test(frame.srcdoc))throw Error('Unexpected remote dependency');

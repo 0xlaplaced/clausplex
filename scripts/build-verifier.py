@@ -42,7 +42,7 @@ def capture(level):
     return {'number': level, 'hash': hashlib.sha256(maps[(level-1)*1536:level*1536]).hexdigest(), 'seed': stats['seed'], 'referenceSteps': stats['steps'], 'referenceReplayHash': replay_hash}, {'level': level, 'seed': stats['seed'], 'steps': stats['steps'], 'replay': encoded}
 
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
-    results = list(pool.map(capture, range(1, 38)))
+    results = list(pool.map(capture, range(1, len(maps)//1536 + 1)))
 catalog = {'format': 'clausplex-rle-v1', 'gameVersion': version, 'headlessSHA256': hashlib.sha256(engine.read_bytes()).hexdigest(), 'framesPerSecond': 35, 'levels': [x[0] for x in results]}
 (ROOT / 'backend/catalog.json').write_text(json.dumps(catalog, indent=2) + '\n')
 (ROOT / 'tests/reference-runs.json').write_text(json.dumps([x[1] for x in results], indent=2) + '\n')

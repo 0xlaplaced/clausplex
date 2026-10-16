@@ -9,4 +9,4 @@ def run(p):
 with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:results=list(pool.map(run,sorted((R/'tests/recordings').glob('*.SP'))))
 report={'passed':sum(r['passed'] for r in results),'total':len(results),'results':results}
 (R/'test-results.json').write_text(json.dumps(report,indent=2));print(report['passed'],'/',report['total'])
-if len(results)!=37 or not all(r['passed'] for r in results):raise SystemExit(1)
+if len(results)!=len((R/'resources/LEVELS.DAT').read_bytes())//1536 or not all(r['passed'] for r in results):raise SystemExit(1)

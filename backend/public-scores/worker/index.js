@@ -25,7 +25,7 @@ function validate(data,catalog){
  const keys=['format','gameVersion','level','levelHash','seed','steps','replay','name','runId','assisted'].sort();
  if(!data||Array.isArray(data)||Object.keys(data).sort().join()!==keys.join())fail('invalid_fields');
  if(data.format!=='clausplex-rle-v1'||data.gameVersion!==catalog.gameVersion)fail('unsupported_game_version');
- if(!Number.isInteger(data.level)||data.level<1||data.level>37)fail('invalid_level');
+ if(!Number.isInteger(data.level)||data.level<1||data.level>catalog.levels.length)fail('invalid_level');
  const level=catalog.levels[data.level-1];if(data.levelHash!==level.hash||data.seed!==level.seed)fail('level_or_seed_mismatch');
  if(typeof data.name!=='string'||!NAME.test(data.name)||data.name!==data.name.trim())fail('invalid_display_name');
  if(typeof data.assisted!=='boolean'||typeof data.runId!=='string'||!UUID.test(data.runId))fail('invalid_run_identity');
@@ -62,7 +62,7 @@ export function createWorker(catalog){return {async fetch(request,env){try{
   if(!url.searchParams.has('level')){
    const {results}=await env.DB.prepare(`WITH best AS (
     SELECT name_key,level,MIN(steps) AS steps FROM runs
-    WHERE status='verified' AND level BETWEEN 1 AND 37 GROUP BY name_key,level
+    WHERE status='verified' AND level BETWEEN 1 AND ? GROUP BY name_key,level
    ), totals AS (
     SELECT name_key,COUNT(*) AS completedLevels,SUM(steps) AS totalSteps FROM best GROUP BY name_key
    ), names AS (
@@ -70,11 +70,11 @@ export function createWorker(catalog){return {async fetch(request,env){try{
     FROM runs WHERE status='verified'
    ) SELECT names.name,totals.completedLevels,totals.totalSteps FROM totals
    JOIN names ON names.name_key=totals.name_key AND names.latest=1
-   ORDER BY totals.completedLevels DESC,totals.totalSteps,totals.name_key LIMIT 50`).all();
+   ORDER BY totals.completedLevels DESC,totals.totalSteps,totals.name_key LIMIT 50`).bind(catalog.levels.length).all();
    return json({entries:results});
   }
   const level=Number(url.searchParams.get('level')),assisted=url.searchParams.get('assisted')==='true'?1:0;
-  if(!Number.isInteger(level)||level<1||level>37)fail('invalid_level');
+  if(!Number.isInteger(level)||level<1||level>catalog.levels.length)fail('invalid_level');
   const {results}=await env.DB.prepare('SELECT name,steps,id AS receiptId FROM (SELECT name,steps,id,ROW_NUMBER() OVER (PARTITION BY name_key ORDER BY steps,id) AS best FROM runs WHERE status=\'verified\' AND level=? AND assisted=?) WHERE best=1 ORDER BY steps,id LIMIT 10').bind(level,assisted).all();
   return json({entries:results});
  }

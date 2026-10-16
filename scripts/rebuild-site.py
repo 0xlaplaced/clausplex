@@ -1,5 +1,7 @@
 """Package the UI and update the committed static release bundle."""
 from pathlib import Path
+import base64
+import gzip
 import json
 import re
 import shutil
@@ -19,7 +21,9 @@ if not engine.exists():
     if not parts:
         raise SystemExit('No bundled engine. Run build-portable.py first.')
     engine.parent.mkdir(exist_ok=True)
-    engine.write_text(''.join(parts))
+    data=json.loads((ROOT/'docs/data.js').read_text().removeprefix('const CLAUS_DATA=').removesuffix(';'))
+    packed=''.join(parts)
+    engine.write_text(gzip.decompress(base64.b64decode(packed)).decode() if data.get('engineEncoding')=='gzip-base64' else packed)
 
 subprocess.run([sys.executable, str(ROOT / 'package.py')], cwd=ROOT, check=True)
 generated = ROOT / 'site/game'

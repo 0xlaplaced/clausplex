@@ -7,7 +7,7 @@ const fixtures=JSON.parse(await fs.readFile(new URL('reference-runs.json',import
 const list=Array.isArray(fixtures)?fixtures:fixtures.runs;
 const data=(level=1)=>{const f=list.find(x=>x.level===level);return {format:'clausplex-rle-v1',gameVersion:catalog.gameVersion,level,levelHash:catalog.levels[level-1].hash,seed:f.seed,steps:f.steps,replay:f.replay,name:'QA original solve',runId:randomUUID(),assisted:false};};
 let checks=0;const ok=(value)=>{assert.ok(value);checks++;};
-for(const patch of [{level:38},{levelHash:'0'.repeat(64)},{seed:0},{gameVersion:'old'},{steps:1},{name:'<script>'},{name:' ab '},{replay:'!!!'},{replay:Buffer.from([15]).toString('base64')},{assisted:'false'},{runId:'wrong'},{extra:1},{replay:''},{replay:'A'.repeat(5500)}]){assert.throws(()=>validate({...data(),...patch}));checks++;}
+for(const patch of [{level:catalog.levels.length+1},{levelHash:'0'.repeat(64)},{seed:0},{gameVersion:'old'},{steps:1},{name:'<script>'},{name:' ab '},{replay:'!!!'},{replay:Buffer.from([15]).toString('base64')},{assisted:'false'},{runId:'wrong'},{extra:1},{replay:''},{replay:'A'.repeat(5500)}]){assert.throws(()=>validate({...data(),...patch}));checks++;}
 await assert.rejects(verifyReplay({...data(),replay:Buffer.from([0]).toString('base64'),steps:1}));checks++;
 await assert.rejects(verifyReplay(data(),{timeout:1}),/verification_timeout/);checks++;
 // Faithful storage stub: author and revision are server-owned; keys are immutable.

@@ -7,11 +7,12 @@ html=re.sub(r'src="(data|engine-[0-9]+)\.js"',r'src="/strict/\1.js"',html).repla
 (Q/'win.html').write_text(html)
 app=(R/'app.js').read_text().replace('all.slice((selected-1)*1536,selected*1536)','qaLevel(all,selected)')
 app=app.replace("'CURRENT.SP','-g','5'","'CURRENT.SP','-g',params.has('recording')?'10':'5'")
+app=app.replace("script.src='engine-'","script.src='/strict/engine-'")
 app+='''
 function qaLevel(all,selected){
  const a=all.slice((selected-1)*1536,selected*1536);
  if(params.has('recording')){diagnostics.qaInput='original recorded inputs through the play UI at engine speed 10';return Module.FS.readFile('/REPLAY'+String(selected).padStart(3,'0')+'.SP');}
- if(selected!==1&&selected!==37)return a;
+ if(!params.has('fixture')&&selected!==1&&selected!==CLAUS_DATA.levels.length)return a;
  diagnostics.qaInput='manual, adjacent-exit fixture';
  a.fill(6,0,1440);for(let y=17;y<23;y++)for(let x=27;x<35;x++)a[y*60+x]=0;
  a[20*60+30]=3;a[20*60+31]=7;a[1444]=0;a[1469]=0;a[1470]=0;a[1471]=0;
@@ -20,7 +21,7 @@ function qaLevel(all,selected){
 }
 '''
 # Keep QA flags across navigation to verify repeated wins, not just one callback.
-app=app.replace("if(test)route.set('test','1');", "if(test)route.set('test','1');if(params.has('recording'))route.set('recording','1');")
+app=app.replace("if(test)route.set('test','1');", "if(test)route.set('test','1');if(params.has('recording'))route.set('recording','1');if(params.has('fixture'))route.set('fixture','1');")
 (Q/'app.js').write_text(app)
 print('Prepared manual exit and normal UI replay fixtures outside the release.')
 
@@ -31,3 +32,7 @@ assert wrapper.count('all.slice((selected-1)*1536,selected*1536)')==1
 wrapper=wrapper.replace('all.slice((selected-1)*1536,selected*1536)',fixture)
 (R/'site/srcdoc-qa.html').write_text(wrapper)
 (R/'site/responsive-qa.html').write_text('''<!doctype html><html lang="en"><meta charset="utf-8"><title>Clausplex responsive QA</title><style>html,body{margin:0;background:#e7d9bc}iframe{display:block;border:0;height:896px;margin:0}</style><iframe id="game" title="Clausplex responsive test"></iframe><script>const q=new URLSearchParams(location.search),w=Math.max(280,Math.min(700,Number(q.get('width'))||414)),f=document.querySelector('#game');q.delete('width');f.style.width=w+'px';f.src='/strict/index.html?'+q;</script></html>''')
+# A visible QA control holds the same keyboard input across simulation ticks.
+# It exists only on the local fixture page, never in docs/ or the release.
+qa=Q/'win.html'
+qa.write_text(qa.read_text()+'''<button id="qa-step" style="position:fixed;right:1rem;bottom:1rem;z-index:99" type="button">QA: hold Right for 250 ms</button><script>document.querySelector('#qa-step').onclick=()=>{document.querySelector('[data-key="39"]').dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',bubbles:true}));setTimeout(()=>document.querySelector('[data-key="39"]').dispatchEvent(new KeyboardEvent('keyup',{key:'Enter',bubbles:true})),250);};</script>''')

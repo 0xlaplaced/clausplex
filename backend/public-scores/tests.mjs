@@ -33,7 +33,7 @@ for(let cycle=1;cycle<=2;cycle++){
  equal((await call('/runs','POST',{...data,runId:crypto.randomUUID(),replay:'****'})).status,400);
  equal((await call('/runs','POST',{...data,runId:crypto.randomUUID(),name:'ab'})).status,400);
  equal((await call('/runs','POST',{...data,runId:crypto.randomUUID(),admin:true})).status,400);
- equal((await call('/boards?level=38')).status,400);
+ equal((await call('/boards?level='+String(catalog.levels.length+1))).status,400);
  equal((await call('/internal/verdict','POST',{id:data.runId,status:'verified',steps:0,reason:'',assisted:false},env.VERIFIER_KEY)).status,400);
  const huge=await worker.fetch(new Request('https://scores.example/runs',{method:'POST',headers:{'Content-Type':'application/json'},body:'x'.repeat(8100)}),env);equal(huge.status,413);
  // Nickname best-time grouping is case-insensitive; categories remain separate.
@@ -65,6 +65,9 @@ for(let cycle=1;cycle<=2;cycle++){
  equal(rows.find(x=>x.name==='One Fast Level').completedLevels,1);
  // Old published clients may still use the level endpoint during rollout.
  equal((await call('/boards?level=2&assisted=true')).data.entries[0].name,'Assisted QA');
+ await addScore('Final Maze Player',catalog.levels.length,35);
+ equal((await call('/boards?level='+catalog.levels.length)).data.entries[0].name,'Final Maze Player');
+ equal((await call('/boards')).data.entries.find(x=>x.name==='Final Maze Player').completedLevels,1);
  db.close();reports.push({cycle,checks});
 }
 console.log(JSON.stringify({passed:true,reports}));
