@@ -33,8 +33,8 @@ function showResult(won,recorded=false){
  finished=true;clearKeys();if(!recorded||replay)Module._claus_pause?.(1);
  $('#loading').hidden=true;$('#pause-overlay').hidden=true;$('#actor').hidden=true;$('#result').hidden=false;$('#pause').disabled=true;
  $('#result-kicker').textContent=recorded?'ORIGINAL SOLUTION':won?'LEVEL '+String(selected).padStart(3,'0')+' COMPLETE':'TRY A DIFFERENT PATH';
- $('#result-title').textContent=recorded?(won?'A way through.':'The solve stopped.'):won?(selected===CLAUS_DATA.levels.length?'All 111. Made it.':'Made it, little Claus.'):'One more try?';
- $('#result-copy').textContent=recorded?(won?'The original solution, in a new world. Your turn.':'Try playing this level yourself.'):won?(selected===CLAUS_DATA.levels.length?'All 111 mazes are behind you. Thanks for playing.':'All required sparks collected. The next maze is ready.'):'Watch the falling rocks and try a different route.';
+ $('#result-title').textContent=recorded?(won?'A way through.':'The solve stopped.'):won?(selected===CLAUS_DATA.levels.length?'Final puzzle complete.':'Made it, little Claus.'):'One more try?';
+ $('#result-copy').textContent=recorded?(won?'The original solution, in a new world. Your turn.':'Try playing this level yourself.'):won?(selected===CLAUS_DATA.levels.length?'You found the exit in level 111. Choose any puzzle from All levels.':'All required sparks collected. The next maze is ready.'):'Watch the falling rocks and try a different route.';
  $('#result-action').textContent=recorded?'Play this level →':won&&selected<CLAUS_DATA.levels.length?'Next level · '+String(selected+1).padStart(3,'0')+' →':won?'Play again →':'Try again →';
  $('#result-action').onclick=()=>navigate(recorded||!won?selected:selected===CLAUS_DATA.levels.length?1:selected+1,true);
  $('#result-action').focus({preventScroll:true});announce($('#result-title').textContent);report(won?'success':'ended',{level:selected,recorded,remaining:diagnostics.remaining});
@@ -71,8 +71,8 @@ async function engineSource(){
 async function start(){
  if(started)return;
  if(!replay&&window.ClausRankings?.prepare(selected)===false)return;
- started=true;diagnostics.level=selected;$('#home').hidden=true;$('#play').hidden=false;document.body.classList.add('is-playing');$('#loading').hidden=false;$('#retry-load').hidden=true;$('#load-status').textContent='Downloading the game…';$('#start').disabled=true;
- if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Named attempt · fixed seed. Completed times save automatically.';$('#live-label').textContent='AUTO-SAVE ON';}
+ started=true;diagnostics.level=selected;$('#home').hidden=true;$('#play').hidden=false;document.body.classList.add('is-playing');const gameNav=$('.masthead nav'),gameActions=$('.game-actions');if(gameNav&&gameActions){gameActions.before(gameNav);$('#help-open').textContent='Help';$('#levels-open').textContent='Levels';}$('#level-title').title=$('#level-title').textContent;window.scrollTo({top:0,left:0,behavior:'instant'});$('#loading').hidden=false;$('#retry-load').hidden=true;$('#load-status').textContent='Downloading the game…';$('#start').disabled=true;
+ if(!replay&&window.ClausRankings?.enabled()){$('#play-note').textContent='Completed times save automatically. Leaving resets this attempt.';$('#live-label').textContent='AUTO-SAVE ON';}
  if(replay){$('#mode-label').textContent='WATCH / ORIGINAL SOLUTION';$('#live-label').textContent='ORIGINAL SOLUTION · NORMAL SPEED';$('#pause').disabled=true;}
  try{
   await loadEngineParts();

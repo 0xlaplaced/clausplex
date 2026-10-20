@@ -1,18 +1,18 @@
 # Clausplex
 
-Little Claus. Big maze.
+A small escape plan.
 
 A free, independent community adaptation of OpenSupaplex with Claus artwork and the original Supaplex puzzles. **All 111 original levels are included.**
 
 [Play on Claus Network](https://claus.si/c/clausplex) · [Developer on X](https://x.com/0xlaplaced)
 
-![Clausplex](assets/screenshot.jpg)
+![Clausplex](assets/screenshot.png)
 
 ## Play
 
 Collect the required sparks and find the exit. Use the arrow keys to move; hold Space and a direction to grab an adjacent object. Press P to pause and R to restart. Touch controls are available on narrow screens.
 
-No wallet, account, installation, or payment is required to play. The game is silent and progress is not saved; choose any of the 111 puzzles from **Levels**.
+No wallet, account, installation, or payment is required to play. The game is silent. Leaving resets the current attempt; completed times save automatically when you enter a player name. Choose any of the 111 puzzles from **All levels**.
 
 The puzzle maps, collision rules, timing, and gameplay simulation are preserved. Clausplex provides a new interface, terrain artwork, and a little Claus character over the OpenSupaplex engine.
 

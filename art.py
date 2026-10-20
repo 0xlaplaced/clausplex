@@ -6,7 +6,7 @@ collision, timing, movement and puzzle data remain the engine's responsibility.
 from pathlib import Path
 import json, math
 R=Path(__file__).resolve().parent
-P=['#fff2d8','#151513','#e7d9bc','#cabb9c','#ef7042','#4a514b','#ad392c','#706a5b','#ddaf68','#71968f','#a89d84','#254f44','#f7b577','#bf8428','#b9b29e','#fff9ed']
+P=['#fff4d8','#20211e','#e8dec1','#d6cfb6','#f36b35','#59635b','#a52d22','#665f50','#efbd55','#9cb9a8','#c4bca5','#315e4d','#ffd585','#a87425','#c5ccb6','#fff9eb']
 class Pixels:
     def __init__(self,w,h,c=0):self.w=w;self.h=h;self.p=[c]*(w*h)
     def dot(self,x,y,c):
@@ -54,30 +54,35 @@ def tile(kind,pose=0):
     if kind==0:return p
     if kind==3:claus(p,pose=pose);return p
     if kind in (2,25):
+        # Quiet removable terrain: a small circuit corner leaves the route legible.
         p.rect(0,0,16,16,2)
         p.line(0,15,15,15,3);p.line(15,0,15,15,3)
-        p.dot(4,5,10);p.line(5,5,8,5,3);p.line(8,5,8,9,3)
-        p.line(8,9,11,9,3);p.dot(11,9,10)
+        p.line(5,6,8,6,10);p.line(8,6,8,10,10);p.dot(10,10,10)
         if kind==25 and pose%4>0:
             p.rect(5,5,7,5,1);p.dot(7,7,4);p.dot(10,7,4)
         return p
     if kind==1:
-        p.ellipse(1,1,14,14,1);p.ellipse(2,2,12,11,5);p.ellipse(3,3,10,9,14)
-        p.line(4,5,10,5,15);p.line(4,6,7,6,15)
-        p.rect(3,10,10,2,5);p.dot(11,4,5);return p
+        # An ink-cut stone, with broad faces instead of metallic highlights.
+        for y,left,right in [(2,5,10),(3,3,12),(4,2,13),(5,1,14),(6,1,14),(7,1,14),(8,1,14),(9,2,13),(10,2,13),(11,3,12),(12,4,11),(13,5,10)]:p.rect(left,y,right-left+1,1,1)
+        p.rect(4,4,8,5,14);p.rect(3,5,10,3,14)
+        p.line(4,9,11,9,5);p.line(5,10,10,10,5);p.line(6,11,9,11,5)
+        p.line(5,4,10,4,15);p.dot(4,5,15);return p
     if kind==4:
+        # Four-point spark, generous silhouette at the native 16 pixel scale.
         for y in range(1,15):
             half=min(y-1,14-y)
+            half=max(0,half-1) if y<5 or y>10 else half
             p.rect(7-half,y,half*2+1,1,1)
-            if half>0:p.rect(8-half,y,half*2-1,1,4 if y<8 else 6)
-        p.line(7,3,3,7,15);p.line(7,4,10,7,12);p.line(4,8,10,8,4);return p
+            if half>0:p.rect(8-half,y,half*2-1,1,8 if y<8 else 4)
+        p.line(7,3,4,7,15);p.line(7,4,10,7,12);p.dot(7,8,15);return p
     if kind in (6,28,29,30,32,33,34,35,36,37):
+        # Structural blocks: no pseudo-metal vents competing with puzzle pieces.
         p.rect(0,0,16,16,1);p.rect(1,1,14,14,5);p.rect(2,2,12,12,1)
-        for x,y in [(2,2),(13,2),(2,13),(13,13)]:p.dot(x,y,10)
-        if kind%3==0:
-            p.line(5,5,10,5,7);p.line(5,8,10,8,7);p.line(5,11,10,11,7)
-        elif kind%3==1:p.rect(5,5,6,6,5);p.rect(7,7,2,2,10)
-        else:p.line(5,10,10,5,7)
+        p.line(3,3,12,3,5);p.line(3,3,3,12,5)
+        p.line(12,4,12,12,7);p.line(4,12,12,12,7)
+        if kind%3==0:p.dot(7,7,5);p.dot(8,8,5)
+        elif kind%3==1:p.rect(6,6,4,4,5)
+        else:p.line(5,10,10,5,5)
         return p
     if kind in (5,26,27,38,39):
         p.rect(0,0,16,16,2);p.rect(1,1,14,14,1);p.rect(3,3,10,10,2)
@@ -86,8 +91,8 @@ def tile(kind,pose=0):
         return p
     if kind==7:
         p.rect(2,1,12,15,1);p.rect(4,3,8,13,11)
-        p.line(6,8,10,8,0);p.line(8,6,10,8,0);p.line(10,8,8,10,0)
-        p.rect(3,0,10,2,4);return p
+        p.line(5,8,10,8,0);p.line(8,6,10,8,0);p.line(10,8,8,10,0)
+        p.rect(3,0,10,2,8);p.dot(11,4,9);return p
     if kind in (8,18,20):
         c={8:4,18:13,20:6}[kind]
         p.rect(2,2,12,12,1);p.rect(3,3,10,10,c);p.rect(5,3,6,4,0);p.rect(5,10,6,3,1)

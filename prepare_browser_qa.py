@@ -4,6 +4,7 @@ import re
 R=Path(__file__).resolve().parent;Q=R/'site/qa';Q.mkdir(exist_ok=True)
 html=(R/'site/game/index.html').read_text().replace('href="theme.css"','href="/strict/theme.css"')
 html=re.sub(r'src="(data|engine-[0-9]+)\.js"',r'src="/strict/\1.js"',html).replace('src="app.js"','src="/qa/app.js"')
+html=re.sub(r'<script data-claus-bootstrap="app">[\s\S]*?</script>', '<script src="/qa/app.js" defer></script>', html)
 (Q/'win.html').write_text(html)
 app=(R/'app.js').read_text().replace('all.slice((selected-1)*1536,selected*1536)','qaLevel(all,selected)')
 app=app.replace("'CURRENT.SP','-g','5'","'CURRENT.SP','-g',params.has('recording')?'10':'5'")

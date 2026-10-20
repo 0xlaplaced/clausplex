@@ -1371,7 +1371,7 @@ void videoLoop() //   proc near       ; CODE XREF: crt?2+52p crt?1+3Ep ...
 void convertPaletteDataToPalette(ColorPaletteData paletteData, ColorPalette outPalette)
 {
     int kExponent = 4; // retained for the original alpha field
-    static const unsigned char clausPalette[16][3] = {{255, 242, 216}, {21, 21, 19}, {231, 217, 188}, {202, 187, 156}, {239, 112, 66}, {74, 81, 75}, {173, 57, 44}, {112, 106, 91}, {221, 175, 104}, {113, 150, 143}, {168, 157, 132}, {37, 79, 68}, {247, 181, 119}, {191, 132, 40}, {185, 178, 158}, {255, 249, 237}};
+    static const unsigned char clausPalette[16][3] = {{255, 244, 216}, {32, 33, 30}, {232, 222, 193}, {214, 207, 182}, {243, 107, 53}, {89, 99, 91}, {165, 45, 34}, {102, 95, 80}, {239, 189, 85}, {156, 185, 168}, {196, 188, 165}, {49, 94, 77}, {255, 213, 133}, {168, 116, 37}, {197, 204, 182}, {255, 249, 235}};
 
     for (int i = 0; i < kNumberOfColors; ++i)
     {
